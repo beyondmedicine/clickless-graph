@@ -1,0 +1,1 @@
+enum GraphLineType { solid, dashed }

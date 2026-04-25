@@ -1,0 +1,1 @@
+enum GraphType { line, bar }
