@@ -8,16 +8,14 @@ sealed class GraphAxis {
   const GraphAxis({
     required this.min,
     required this.max,
-    required this.showBorderLine,
+    required this.showLine,
     this.markers = const [],
-    this.indicatorLines = const [],
   });
 
   final num min;
   final num max;
   final List<GraphAxisMarking> markers;
-  final List<GraphIndicatorLine> indicatorLines;
-  final bool showBorderLine;
+  final bool showLine;
 }
 
 @immutable
@@ -26,8 +24,7 @@ final class HorizontalGraphAxis extends GraphAxis {
     required super.min,
     required super.max,
     super.markers,
-    super.indicatorLines,
-    super.showBorderLine = true,
+    super.showLine = true,
   });
 }
 
@@ -38,11 +35,12 @@ final class VerticalGraphAxis extends GraphAxis {
     required super.max,
     required this.groups,
     super.markers,
-    super.indicatorLines,
-    super.showBorderLine = false,
+    super.showLine = false,
     this.label,
+    this.indicatorLines = const [],
   });
 
   final String? label;
   final List<GraphPointGroup> groups;
+  final List<GraphIndicatorLine> indicatorLines;
 }
