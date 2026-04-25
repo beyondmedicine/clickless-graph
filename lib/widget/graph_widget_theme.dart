@@ -9,6 +9,7 @@ final class GraphWidgetTheme {
     this.indicatorLineColor = const Color(0xFFC5D0DA),
     this.trendLineColor = const Color(0xFFC5D0DA),
     this.axisLineWidth = 1.5,
+    this.markingLineWidth = 0.5,
     this.pointSize = 6,
     this.barWidth = 20,
     this.axisMarkingLabelAndVerticalAxisGap = 4,
@@ -62,6 +63,7 @@ final class GraphWidgetTheme {
   final Color trendLineColor;
 
   final double axisLineWidth;
+  final double markingLineWidth;
   final double pointSize;
   final double barWidth;
 
@@ -87,6 +89,7 @@ final class GraphWidgetTheme {
     Color? indicatorLineColor,
     Color? trendLineColor,
     double? axisLineWidth,
+    double? gridLineWidth,
     double? pointSize,
     double? barWidth,
     double? axisMarkingLabelAndVerticalAxisGap,
@@ -109,6 +112,7 @@ final class GraphWidgetTheme {
     indicatorLineColor: indicatorLineColor ?? this.indicatorLineColor,
     trendLineColor: trendLineColor ?? this.trendLineColor,
     axisLineWidth: axisLineWidth ?? this.axisLineWidth,
+    markingLineWidth: gridLineWidth ?? this.markingLineWidth,
     pointSize: pointSize ?? this.pointSize,
     barWidth: barWidth ?? this.barWidth,
     axisMarkingLabelAndVerticalAxisGap:
@@ -147,6 +151,7 @@ final class GraphWidgetTheme {
             indicatorLineColor == other.indicatorLineColor &&
             trendLineColor == other.trendLineColor &&
             axisLineWidth == other.axisLineWidth &&
+            markingLineWidth == other.markingLineWidth &&
             pointSize == other.pointSize &&
             barWidth == other.barWidth &&
             axisMarkingLabelAndVerticalAxisGap ==
@@ -177,6 +182,7 @@ final class GraphWidgetTheme {
       indicatorLineColor,
       trendLineColor,
       axisLineWidth,
+      markingLineWidth,
       pointSize,
       barWidth,
       axisMarkingLabelAndVerticalAxisGap,

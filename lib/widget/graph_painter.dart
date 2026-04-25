@@ -38,9 +38,9 @@ final class GraphPainter extends CustomPainter {
 
     _drawAxisLabels(canvas, size);
 
-    _drawYAxisMarkingsAndGrid(canvas, size, plotArea);
+    _drawYAxisMarkings(canvas, size, plotArea);
 
-    _drawXAxis(canvas, plotArea);
+    _drawXAxisMarking(canvas, plotArea);
 
     for (final axis in data.yAxes) {
       _drawYAxisIndicatorLines(canvas, plotArea, axis);
@@ -82,6 +82,8 @@ final class GraphPainter extends CustomPainter {
           );
       }
     }
+
+    _drawAxisLines(canvas, plotArea);
 
     if (data.hasLegend) {
       _drawLegend(canvas, plotArea);
@@ -226,13 +228,13 @@ final class GraphPainter extends CustomPainter {
     }
   }
 
-  void _drawYAxisMarkingsAndGrid(Canvas canvas, Size size, Rect plot) {
+  void _drawYAxisMarkings(Canvas canvas, Size size, Rect plot) {
     final leftAxis = data.leftAxis;
     final rightAxis = data.rightAxis;
 
     final gridPaint = Paint()
       ..color = theme.axisMarkingLineColor
-      ..strokeWidth = 1;
+      ..strokeWidth = theme.markingLineWidth;
 
     for (final marker in leftAxis.markers) {
       final label = marker.label;
@@ -276,26 +278,10 @@ final class GraphPainter extends CustomPainter {
         }
       }
     }
-
-    if (leftAxis.showLine) {
-      canvas.drawLine(plot.topLeft, plot.bottomLeft, gridPaint);
-    }
-
-    if (rightAxis?.showLine ?? false) {
-      canvas.drawLine(plot.topRight, plot.bottomRight, gridPaint);
-    }
   }
 
-  void _drawXAxis(Canvas canvas, Rect plot) {
-    if (data.xAxis.showLine) {
-      final axisPaint = Paint()
-        ..color = theme.axisLineColor
-        ..strokeWidth = theme.axisLineWidth;
-
-      canvas.drawLine(plot.bottomLeft, plot.bottomRight, axisPaint);
-    }
-
-    final gridPaint = Paint()
+  void _drawXAxisMarking(Canvas canvas, Rect plot) {
+    final markingPaint = Paint()
       ..color = theme.axisMarkingLineColor
       ..strokeWidth = 1;
 
@@ -304,7 +290,11 @@ final class GraphPainter extends CustomPainter {
       final x = _mapX(marker.value, plot);
 
       if (marker.showLine) {
-        canvas.drawLine(Offset(x, plot.top), Offset(x, plot.bottom), gridPaint);
+        canvas.drawLine(
+          Offset(x, plot.top),
+          Offset(x, plot.bottom),
+          markingPaint,
+        );
       }
 
       if (label != null) {
@@ -379,14 +369,15 @@ final class GraphPainter extends CustomPainter {
 
       final color = value == null ? theme.disabledColor : point.color;
 
-      final rect = RRect.fromRectAndRadius(
+      final rect = RRect.fromRectAndCorners(
         Rect.fromLTWH(
           x - theme.barWidth / 2,
           y ?? baseline - 6,
           theme.barWidth,
           y != null ? baseline - y : 6,
         ),
-        const Radius.circular(3),
+        topLeft: const Radius.circular(4),
+        topRight: const Radius.circular(4),
       );
 
       canvas.drawRRect(rect, Paint()..color = color);
@@ -535,6 +526,45 @@ final class GraphPainter extends CustomPainter {
           ..close();
 
         canvas.drawPath(path, paint);
+    }
+  }
+
+  void _drawAxisLines(Canvas canvas, Rect plot) {
+    final width = theme.axisLineWidth;
+
+    final axisLinePaint = Paint()
+      ..color = theme.axisLineColor
+      ..strokeWidth = width;
+
+    final leftAxis = data.leftAxis;
+    final rightAxis = data.rightAxis;
+
+    if (data.xAxis.showLine) {
+      final axisPaint = Paint()
+        ..color = theme.axisLineColor
+        ..strokeWidth = theme.axisLineWidth;
+
+      canvas.drawLine(
+        plot.bottomLeft + Offset(width / 2, -width / 2),
+        plot.bottomRight + Offset(-width / 2, -width / 2),
+        axisPaint,
+      );
+    }
+
+    if (leftAxis.showLine) {
+      canvas.drawLine(
+        plot.topLeft + Offset(width / 2, width / 2),
+        plot.bottomLeft + Offset(width / 2, -width / 2),
+        axisLinePaint,
+      );
+    }
+
+    if (rightAxis?.showLine ?? false) {
+      canvas.drawLine(
+        plot.topRight + Offset(-width / 2, width / 2),
+        plot.bottomRight + Offset(-width / 2, -width / 2),
+        axisLinePaint,
+      );
     }
   }
 

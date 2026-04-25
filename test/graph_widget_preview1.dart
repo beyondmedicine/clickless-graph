@@ -86,7 +86,6 @@ const _sampleData = MultiVerticalAxisGraphData(
       ),
     ],
     label: '(점)',
-    showLine: true,
   ),
   y2Axis: VerticalGraphAxis(
     min: 0,
