@@ -1,0 +1,1 @@
+enum PlotGraphType { line, bar }

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 @immutable
-final class GraphAxisMarking {
-  const GraphAxisMarking({
+final class PlotGraphAxisMarking {
+  const PlotGraphAxisMarking({
     required this.value,
     this.label,
     this.showLine = false,

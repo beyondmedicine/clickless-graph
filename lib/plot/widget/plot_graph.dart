@@ -1,17 +1,17 @@
-import 'package:clickless_graph/model/graph_data.dart';
-import 'package:clickless_graph/widget/graph_painter.dart';
-import 'package:clickless_graph/widget/graph_widget_theme.dart';
+import 'package:clickless_graph/plot/model/plot_graph_data.dart';
+import 'package:clickless_graph/plot/widget/plot_graph_painter.dart';
+import 'package:clickless_graph/plot/widget/plot_graph_theme.dart';
 import 'package:flutter/material.dart';
 
-final class GraphWidget extends StatelessWidget {
-  const GraphWidget({
+final class PlotGraph extends StatelessWidget {
+  const PlotGraph({
     super.key,
     required this.data,
-    this.theme = const GraphWidgetTheme(),
+    this.theme = const PlotGraphTheme(),
   });
 
-  final GraphData data;
-  final GraphWidgetTheme theme;
+  final PlotGraphData data;
+  final PlotGraphTheme theme;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ final class GraphWidget extends StatelessWidget {
           height: constraints.maxHeight,
           child: RepaintBoundary(
             child: CustomPaint(
-              painter: GraphPainter(
+              painter: PlotGraphPainter(
                 data: data,
                 theme: theme,
                 textDirection:

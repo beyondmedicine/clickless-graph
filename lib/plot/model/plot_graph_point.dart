@@ -2,8 +2,8 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 @immutable
-final class GraphPoint {
-  const GraphPoint({
+final class PlotGraphPoint {
+  const PlotGraphPoint({
     required this.x,
     required this.y,
     required this.color,

@@ -1,0 +1,1 @@
+enum PlotGraphLineType { solid, dashed }

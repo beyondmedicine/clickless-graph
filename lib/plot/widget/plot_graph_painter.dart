@@ -1,30 +1,30 @@
 import 'dart:math';
-import 'package:clickless_graph/model/graph_axis.dart';
-import 'package:clickless_graph/model/graph_data.dart';
-import 'package:clickless_graph/model/graph_line_type.dart';
-import 'package:clickless_graph/model/graph_point_group.dart';
-import 'package:clickless_graph/model/graph_point_shape.dart';
-import 'package:clickless_graph/model/graph_trend_line.dart';
-import 'package:clickless_graph/model/graph_type.dart';
-import 'package:clickless_graph/util/canvas_extension.dart';
-import 'package:clickless_graph/util/graph_axis_extension.dart';
-import 'package:clickless_graph/util/graph_data_extension.dart';
-import 'package:clickless_graph/widget/graph_widget_theme.dart';
+import 'package:clickless_graph/plot/model/plot_graph_axis.dart';
+import 'package:clickless_graph/plot/model/plot_graph_data.dart';
+import 'package:clickless_graph/plot/model/plot_graph_line_type.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_shape.dart';
+import 'package:clickless_graph/plot/model/plot_graph_trend_line.dart';
+import 'package:clickless_graph/plot/model/plot_graph_type.dart';
+import 'package:clickless_graph/plot/util/canvas_extension.dart';
+import 'package:clickless_graph/plot/util/graph_axis_extension.dart';
+import 'package:clickless_graph/plot/util/graph_data_extension.dart';
+import 'package:clickless_graph/plot/widget/plot_graph_theme.dart';
 import 'package:flutter/material.dart';
 
-final class GraphPainter extends CustomPainter {
-  const GraphPainter({
+final class PlotGraphPainter extends CustomPainter {
+  const PlotGraphPainter({
     required this.data,
     required this.theme,
     required this.textDirection,
   });
 
-  final GraphData data;
-  final GraphWidgetTheme theme;
+  final PlotGraphData data;
+  final PlotGraphTheme theme;
   final TextDirection textDirection;
 
   @override
-  bool shouldRepaint(covariant GraphPainter oldDelegate) {
+  bool shouldRepaint(covariant PlotGraphPainter oldDelegate) {
     return oldDelegate.data != data ||
         oldDelegate.theme != theme ||
         oldDelegate.textDirection != textDirection;
@@ -48,7 +48,7 @@ final class GraphPainter extends CustomPainter {
 
     final barGroupCount = data.yAxes
         .expand((axis) => axis.groups)
-        .where((group) => group.type == GraphType.bar)
+        .where((group) => group.type == PlotGraphType.bar)
         .length;
 
     var barGroupIndex = 0;
@@ -64,7 +64,7 @@ final class GraphPainter extends CustomPainter {
       final group = pair.group;
 
       switch (group.type) {
-        case GraphType.bar:
+        case PlotGraphType.bar:
           _drawBarPointGroup(
             canvas: canvas,
             plot: plotArea,
@@ -73,7 +73,7 @@ final class GraphPainter extends CustomPainter {
             barGroupCount: barGroupCount,
             barGroupIndex: barGroupIndex++,
           );
-        case GraphType.line:
+        case PlotGraphType.line:
           _drawLinePointGroup(
             canvas: canvas,
             plot: plotArea,
@@ -318,7 +318,7 @@ final class GraphPainter extends CustomPainter {
   void _drawYAxisIndicatorLines(
     Canvas canvas,
     Rect plot,
-    VerticalGraphAxis axis,
+    VerticalPlotGraphAxis axis,
   ) {
     for (final line in axis.indicatorLines) {
       final y = _mapY(line.value, axis, plot);
@@ -352,8 +352,8 @@ final class GraphPainter extends CustomPainter {
   void _drawBarPointGroup({
     required Canvas canvas,
     required Rect plot,
-    required VerticalGraphAxis axis,
-    required GraphPointGroup group,
+    required VerticalPlotGraphAxis axis,
+    required PlotGraphPointGroup group,
     required int barGroupCount,
     required int barGroupIndex,
   }) {
@@ -403,8 +403,8 @@ final class GraphPainter extends CustomPainter {
   void _drawLinePointGroup({
     required Canvas canvas,
     required Rect plot,
-    required VerticalGraphAxis axis,
-    required GraphPointGroup group,
+    required VerticalPlotGraphAxis axis,
+    required PlotGraphPointGroup group,
   }) {
     final trendLine = group.trendLine;
 
@@ -428,7 +428,7 @@ final class GraphPainter extends CustomPainter {
       final color = points[i + 1].color;
 
       switch (group.lineType) {
-        case GraphLineType.dashed:
+        case PlotGraphLineType.dashed:
           canvas.drawDashedLine(
             start,
             end,
@@ -438,7 +438,7 @@ final class GraphPainter extends CustomPainter {
             gapWidth: 2,
           );
 
-        case GraphLineType.solid:
+        case PlotGraphLineType.solid:
           canvas.drawLine(
             start,
             end,
@@ -486,8 +486,8 @@ final class GraphPainter extends CustomPainter {
   void _drawTrendLine(
     Canvas canvas,
     Rect plot,
-    VerticalGraphAxis axis,
-    GraphTrendLine trendLine,
+    VerticalPlotGraphAxis axis,
+    PlotGraphTrendLine trendLine,
   ) {
     final startY = trendLine.start.y;
     final endY = trendLine.end.y;
@@ -510,15 +510,15 @@ final class GraphPainter extends CustomPainter {
     Canvas canvas,
     Offset center, {
     required Color color,
-    required GraphPointShape shape,
+    required PlotGraphPointShape shape,
   }) {
     final paint = Paint()..color = color;
 
     switch (shape) {
-      case GraphPointShape.circle:
+      case PlotGraphPointShape.circle:
         canvas.drawCircle(center, _pointSize / 2, paint);
 
-      case GraphPointShape.triangle:
+      case PlotGraphPointShape.triangle:
         final path = Path()
           ..moveTo(center.dx, center.dy - _pointSize / 2)
           ..lineTo(center.dx - _pointSize / 2, center.dy + _pointSize / 2)
@@ -616,7 +616,7 @@ final class GraphPainter extends CustomPainter {
       final iconCenter = Offset(x + 3, y + 8.5);
       final legend = group.legend;
 
-      if (group.type == GraphType.bar) {
+      if (group.type == PlotGraphType.bar) {
         canvas.drawRRect(
           RRect.fromRectAndRadius(
             Rect.fromCenter(center: iconCenter, width: 6, height: 6),
@@ -641,7 +641,7 @@ final class GraphPainter extends CustomPainter {
     }
   }
 
-  Color _legendColor(GraphPointGroup group) {
+  Color _legendColor(PlotGraphPointGroup group) {
     for (final point in group.points) {
       if (point.y != null) {
         return point.color;
@@ -690,7 +690,7 @@ final class GraphPainter extends CustomPainter {
     return plot.left + plot.width * normalized;
   }
 
-  double _mapY(num value, VerticalGraphAxis axis, Rect plot) {
+  double _mapY(num value, VerticalPlotGraphAxis axis, Rect plot) {
     final min = axis.min.toDouble();
     final max = axis.max.toDouble();
 

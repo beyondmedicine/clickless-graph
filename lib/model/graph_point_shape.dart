@@ -1,1 +1,0 @@
-enum GraphPointShape { circle, triangle }

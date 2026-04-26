@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-final class GraphWidgetTheme {
-  const GraphWidgetTheme({
+final class PlotGraphTheme {
+  const PlotGraphTheme({
     this.backgroundColor = Colors.transparent,
     this.axisLineColor = const Color(0xFFDEE4EA),
     this.disabledColor = const Color(0xFFC5D0DA),
@@ -81,7 +81,7 @@ final class GraphWidgetTheme {
   final TextStyle indicatorLineLabelTextStyle;
   final TextStyle legendTextStyle;
 
-  GraphWidgetTheme copyWith({
+  PlotGraphTheme copyWith({
     Color? backgroundColor,
     Color? axisLineColor,
     Color? disabledColor,
@@ -104,7 +104,7 @@ final class GraphWidgetTheme {
     TextStyle? pointLabelTextStyle,
     TextStyle? indicatorLineLabelTextStyle,
     TextStyle? legendTextStyle,
-  }) => GraphWidgetTheme(
+  }) => PlotGraphTheme(
     backgroundColor: backgroundColor ?? this.backgroundColor,
     axisLineColor: axisLineColor ?? this.axisLineColor,
     disabledColor: disabledColor ?? this.disabledColor,
@@ -143,7 +143,7 @@ final class GraphWidgetTheme {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        other is GraphWidgetTheme &&
+        other is PlotGraphTheme &&
             backgroundColor == other.backgroundColor &&
             axisLineColor == other.axisLineColor &&
             disabledColor == other.disabledColor &&
