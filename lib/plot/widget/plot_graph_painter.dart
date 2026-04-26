@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:clickless_graph/common/util/canvas_extension.dart';
 import 'package:clickless_graph/plot/model/plot_graph_axis.dart';
 import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_line_type.dart';
@@ -6,9 +7,10 @@ import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_shape.dart';
 import 'package:clickless_graph/plot/model/plot_graph_trend_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_type.dart';
-import 'package:clickless_graph/plot/util/canvas_extension.dart';
 import 'package:clickless_graph/plot/util/graph_axis_extension.dart';
 import 'package:clickless_graph/plot/util/graph_data_extension.dart';
+import 'package:clickless_graph/common/util/get_max_text_size.dart';
+import 'package:clickless_graph/common/util/get_text_size.dart';
 import 'package:clickless_graph/plot/widget/plot_graph_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -97,7 +99,7 @@ final class PlotGraphPainter extends CustomPainter {
     final rightAxis = data.rightAxis;
 
     final double leftSpace = leftAxis.hasMarkingLabel
-        ? _getMaxTextSize(
+        ? getMaxTextSize(
                 leftAxis.markers
                     .map((marker) => marker.label)
                     .whereType<String>(),
@@ -107,7 +109,7 @@ final class PlotGraphPainter extends CustomPainter {
         : 0;
 
     final double rightSpace = rightAxis != null && rightAxis.hasMarkingLabel
-        ? _getMaxTextSize(
+        ? getMaxTextSize(
                 rightAxis.markers
                     .map((marker) => marker.label)
                     .whereType<String>(),
@@ -118,7 +120,7 @@ final class PlotGraphPainter extends CustomPainter {
 
     final double spaceDerivedFromVerticalAxisLabels = <double>[
       // 보조 라인 라벨 고려
-      _getMaxTextSize(
+      getMaxTextSize(
             data.yAxes
                 .expand((axis) => axis.indicatorLines)
                 .map((indicatorLine) => indicatorLine.label)
@@ -128,7 +130,7 @@ final class PlotGraphPainter extends CustomPainter {
           2,
       // 왼쪽 세로 축 눈금 라벨 고려
       leftAxis.hasMarkingLabel
-          ? _getMaxTextSize(
+          ? getMaxTextSize(
                   leftAxis.markers
                       .map((marker) => marker.label)
                       .whereType<String>(),
@@ -138,7 +140,7 @@ final class PlotGraphPainter extends CustomPainter {
           : 0,
       // 오른쪽 세로 축 눈금 라벨 고려
       rightAxis != null && rightAxis.hasMarkingLabel
-          ? _getMaxTextSize(
+          ? getMaxTextSize(
                   rightAxis.markers
                       .map((marker) => marker.label)
                       .whereType<String>(),
@@ -151,7 +153,7 @@ final class PlotGraphPainter extends CustomPainter {
     final double topSpace = <double>[
       // 세로축 라벨 고려
       data.hasVerticalAxisLabel
-          ? _getMaxTextSize(
+          ? getMaxTextSize(
                   data.yAxes.map((axis) => axis.label).whereType<String>(),
                   theme.verticalAxisLabelTextStyle,
                 ).height +
@@ -159,7 +161,7 @@ final class PlotGraphPainter extends CustomPainter {
           : 0,
       // 데이터 포인트 라벨 고려
       data.hasPointLabel
-          ? _getMaxTextSize(
+          ? getMaxTextSize(
                   data.allPoints
                       .map((point) => point.label)
                       .whereType<String>(),
@@ -174,7 +176,7 @@ final class PlotGraphPainter extends CustomPainter {
       (
           // 가로축 눈금 라벨 고려
           data.hasHorizontalAxisMarkingLabel
-              ? _getMaxTextSize(
+              ? getMaxTextSize(
                       data.xAxis.markers
                           .map((marker) => marker.label)
                           .whereType<String>(),
@@ -185,7 +187,7 @@ final class PlotGraphPainter extends CustomPainter {
           (
           // 범례 고려
           data.hasLegend
-              ? _getMaxTextSize(
+              ? getMaxTextSize(
                       data.allPointGroups
                           .map((group) => group.legend)
                           .whereType<String>(),
@@ -209,8 +211,7 @@ final class PlotGraphPainter extends CustomPainter {
     final rightAxisLabel = data.rightAxis?.label;
 
     if (leftAxisLabel != null) {
-      _drawText(
-        canvas,
+      canvas.drawText(
         leftAxisLabel,
         theme.axisMarkingLabelTextStyle,
         Offset.zero,
@@ -218,8 +219,7 @@ final class PlotGraphPainter extends CustomPainter {
     }
 
     if (rightAxisLabel != null) {
-      _drawText(
-        canvas,
+      canvas.drawText(
         rightAxisLabel,
         theme.axisMarkingLabelTextStyle,
         Offset(size.width, 0),
@@ -243,13 +243,12 @@ final class PlotGraphPainter extends CustomPainter {
       canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
 
       if (label != null) {
-        _drawText(
-          canvas,
+        canvas.drawText(
           label,
           theme.axisMarkingLabelTextStyle,
           Offset(
             0,
-            y - _getTextSize(label, theme.axisMarkingLabelTextStyle).height / 2,
+            y - getTextSize(label, theme.axisMarkingLabelTextStyle).height / 2,
           ),
         );
       }
@@ -263,14 +262,13 @@ final class PlotGraphPainter extends CustomPainter {
         canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
 
         if (label != null) {
-          _drawText(
-            canvas,
+          canvas.drawText(
             label,
             theme.axisMarkingLabelTextStyle,
             Offset(
               size.width,
               y -
-                  _getTextSize(label, theme.axisMarkingLabelTextStyle).height /
+                  getTextSize(label, theme.axisMarkingLabelTextStyle).height /
                       2,
             ),
             textAlign: TextAlign.right,
@@ -300,8 +298,7 @@ final class PlotGraphPainter extends CustomPainter {
       if (label != null) {
         final width = _getSlotWidth(plot);
 
-        _drawText(
-          canvas,
+        canvas.drawText(
           label,
           theme.axisMarkingLabelTextStyle,
           Offset(
@@ -335,13 +332,12 @@ final class PlotGraphPainter extends CustomPainter {
       if (line.label != null) {
         final label = '${line.label}\n${_formatNumber(line.value)}';
 
-        _drawText(
-          canvas,
+        canvas.drawText(
           label,
           theme.indicatorLineLabelTextStyle,
           Offset(
             plot.right - 4,
-            y - _getTextSize(label, theme.axisMarkingLabelTextStyle).height / 2,
+            y - getTextSize(label, theme.axisMarkingLabelTextStyle).height / 2,
           ),
           textAlign: TextAlign.center,
         );
@@ -383,10 +379,9 @@ final class PlotGraphPainter extends CustomPainter {
       canvas.drawRRect(rect, Paint()..color = color);
 
       if (label != null) {
-        final textSize = _getTextSize(label, theme.pointLabelTextStyle);
+        final textSize = getTextSize(label, theme.pointLabelTextStyle);
 
-        _drawText(
-          canvas,
+        canvas.drawText(
           label,
           theme.pointLabelTextStyle,
           Offset(
@@ -463,10 +458,9 @@ final class PlotGraphPainter extends CustomPainter {
       _drawPoint(canvas, center, color: point.color, shape: group.pointShape);
 
       if (label != null) {
-        final textSize = _getTextSize(label, theme.pointLabelTextStyle);
+        final textSize = getTextSize(label, theme.pointLabelTextStyle);
 
-        _drawText(
-          canvas,
+        canvas.drawText(
           label,
           theme.pointLabelTextStyle,
           Offset(
@@ -586,7 +580,7 @@ final class PlotGraphPainter extends CustomPainter {
         _pointSize +
             (legend != null
                 ? theme.legendPointAndLegendLabelGap +
-                      _getTextSize(legend, theme.legendTextStyle).width
+                      getTextSize(legend, theme.legendTextStyle).width
                 : 0),
       );
     }
@@ -600,7 +594,7 @@ final class PlotGraphPainter extends CustomPainter {
     final y =
         plot.bottom +
         (data.hasHorizontalAxisMarkingLabel
-            ? _getMaxTextSize(
+            ? getMaxTextSize(
                     data.xAxis.markers
                         .map((marker) => marker.label)
                         .whereType<String>(),
@@ -629,8 +623,7 @@ final class PlotGraphPainter extends CustomPainter {
       }
 
       if (legend != null) {
-        _drawText(
-          canvas,
+        canvas.drawText(
           legend,
           theme.legendTextStyle,
           Offset(x + _pointSize + theme.legendPointAndLegendLabelGap, y),
@@ -705,56 +698,6 @@ final class PlotGraphPainter extends CustomPainter {
   double _getSlotWidth(Rect plot) => data.xAxis.markers.isNotEmpty
       ? plot.width / data.xAxis.markers.length
       : plot.width;
-
-  void _drawText(
-    Canvas canvas,
-    String text,
-    TextStyle style,
-    Offset offset, {
-    Color? color,
-    TextAlign textAlign = TextAlign.left,
-    double? width,
-  }) {
-    final painter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: style.copyWith(color: color ?? style.color),
-      ),
-      textAlign: textAlign,
-      textDirection: textDirection,
-      maxLines: text.contains('\n') ? null : 1,
-    )..layout(maxWidth: width ?? double.infinity);
-
-    final paintOffset = switch (textAlign) {
-      TextAlign.center => Offset(
-        offset.dx + ((width ?? painter.width) - painter.width) / 2,
-        offset.dy,
-      ),
-      TextAlign.right || TextAlign.end => Offset(
-        offset.dx + ((width ?? 0) - painter.width),
-        offset.dy,
-      ),
-      _ => offset,
-    };
-
-    painter.paint(canvas, paintOffset);
-  }
-
-  Size _getMaxTextSize(Iterable<String> texts, TextStyle style) =>
-      texts.fold(const Size(0, 0), (acc, text) {
-        final size = _getTextSize(text, style);
-
-        return Size(max(acc.width, size.width), max(acc.height, size.height));
-      });
-
-  Size _getTextSize(String text, TextStyle style) {
-    final painter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      textDirection: textDirection,
-    )..layout();
-
-    return painter.size;
-  }
 
   static String _formatNumber(num value) {
     final asDouble = value.toDouble();
