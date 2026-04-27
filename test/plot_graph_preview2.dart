@@ -6,7 +6,7 @@ import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
 import 'package:clickless_graph/plot/model/plot_graph_trend_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_type.dart';
 import 'package:clickless_graph/plot/widget/plot_graph.dart';
-import 'package:clickless_graph/plot/widget/plot_graph_theme.dart';
+import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {

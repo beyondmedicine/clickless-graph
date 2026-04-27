@@ -11,7 +11,7 @@ import 'package:clickless_graph/plot/util/graph_axis_extension.dart';
 import 'package:clickless_graph/plot/util/graph_data_extension.dart';
 import 'package:clickless_graph/common/util/get_max_text_size.dart';
 import 'package:clickless_graph/common/util/get_text_size.dart';
-import 'package:clickless_graph/plot/widget/plot_graph_theme.dart';
+import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
 import 'package:flutter/material.dart';
 
 final class PlotGraphPainter extends CustomPainter {
