@@ -61,9 +61,7 @@ final class PolygonGraphPainter extends CustomPainter {
 
     // 눈금 라인 라벨 그리기
     for (final markingLine in data.markingLines) {
-      if (markingLine.label != null) {
-        _drawMarkingLabel(canvas, markingLine);
-      }
+      _drawMarkingLabel(canvas, markingLine);
     }
 
     // 포인트 그룹 그리기
@@ -176,7 +174,15 @@ final class PolygonGraphPainter extends CustomPainter {
       textDirection: textDirection,
     );
 
-    final position = center + Offset(0, radius * cos(pi / data.axes.length));
+    final position =
+        center +
+        Offset(
+          0,
+          radius *
+              cos(pi / data.axes.length) *
+              line.value /
+              (data.max - data.min),
+        );
 
     canvas.drawRect(
       Rect.fromLTRB(
@@ -271,6 +277,14 @@ final class PolygonGraphPainter extends CustomPainter {
       offset,
       textDirection: textDirection,
     );
+
+    canvas.drawLine(
+      Offset(offset.dx, offset.dy + textSize.height),
+      Offset(offset.dx + textSize.width, offset.dy + textSize.height),
+      Paint()
+        ..color = theme.axisLabelTextStyle.color ?? Colors.transparent
+        ..strokeWidth = 1,
+    );
   }
 
   Path _getPolygonPath(List<Offset> vertices, {double cornerRadius = 0}) {
@@ -299,8 +313,8 @@ final class PolygonGraphPainter extends CustomPainter {
         min(previousDistance, nextDistance) / 2,
       );
 
-      final start = x.$2 + fromPrevious / previousDistance * resolvedRadius;
-      final end = x.$2 + toNext / nextDistance * resolvedRadius;
+      final start = x.$2 + fromPrevious * resolvedRadius / previousDistance;
+      final end = x.$2 + toNext * resolvedRadius / nextDistance;
 
       return (start: start, control: x.$2, end: end);
     }).toList();
@@ -326,8 +340,7 @@ final class PolygonGraphPainter extends CustomPainter {
   Offset _getOffset({required int axisIndex, required double radius}) {
     final index = axisIndex % data.axes.length;
     final n = data.axes.length;
-    final theta =
-        -(n.isEven ? pi / 2 - pi / (2 * n) : pi / 2) + pi * 2 * index / n;
+    final theta = -(n.isEven ? pi / 2 - pi / n : pi / 2) + pi * 2 * index / n;
 
     return Offset(
       center.dx + radius * cos(theta),

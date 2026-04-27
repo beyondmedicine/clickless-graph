@@ -21,9 +21,6 @@ final class PolygonGraphTheme {
       fontWeight: FontWeight.w500,
       letterSpacing: -0.24,
       height: 1.4,
-      decoration: TextDecoration.underline,
-      decorationColor: Color(0xFF8D9BA8),
-      decorationThickness: 1,
     ),
     this.markingLabelTextStyle = const TextStyle(
       color: Color(0xFF8D9BA8),

@@ -29,42 +29,39 @@ final class PolygonGraphPreview1App extends StatelessWidget {
   }
 }
 
-const _red = Color(0xFFFF4545);
-const _yellow = Color(0xFFFFB800);
-const _green = Color(0xFF16AD7E);
 const _blue = Color(0xFF29A9FF);
+const _gray = Color(0xFFB8C7D4);
 
 const _sampleData = PolygonGraphData(
   min: 0,
   max: 10,
   axes: [
-    PolygonGraphAxis(label: '통증'),
-    PolygonGraphAxis(label: '스트레스'),
-    PolygonGraphAxis(label: '피로'),
-    PolygonGraphAxis(label: '수면'),
-    PolygonGraphAxis(label: '활동'),
+    PolygonGraphAxis(label: '관자놀이'),
+    PolygonGraphAxis(label: '관절강'),
+    PolygonGraphAxis(label: '목 근육'),
+    PolygonGraphAxis(label: '저작근 하부'),
+    PolygonGraphAxis(label: '저작근 중심'),
+    PolygonGraphAxis(label: '이마 근육'),
   ],
   markingLines: [
-    PolygonGraphMarkingLine(value: 2, label: '낮음'),
-    PolygonGraphMarkingLine(value: 4),
-    PolygonGraphMarkingLine(value: 6, label: '보통'),
-    PolygonGraphMarkingLine(value: 8),
-    PolygonGraphMarkingLine(value: 10, label: '높음'),
+    PolygonGraphMarkingLine(value: 0, label: '0', showLine: false),
+    PolygonGraphMarkingLine(value: 5, label: '5'),
+    PolygonGraphMarkingLine(value: 10, label: '10'),
   ],
   pointGroups: [
     PolygonGraphPointGroup(
-      legend: '현재',
-      values: [8, 7, 6, 4, 5],
-      pointColor: _red,
-      fillColor: Color(0x26FF4545),
-      zIndex: 2,
+      legend: '기준',
+      values: [4, 5, 7, 8, 9, 4],
+      pointColor: _gray,
+      fillColor: Color(0x1FB8C7D4),
+      zIndex: 0,
     ),
     PolygonGraphPointGroup(
-      legend: '목표',
-      values: [3, 3, 3, 8, null],
-      pointColor: _green,
-      fillColor: Color(0x1F16AD7E),
-      zIndex: 0,
+      legend: '현재',
+      values: [8, 7, 5, 4, 3, 9],
+      pointColor: _blue,
+      fillColor: Color(0x2629A9FF),
+      zIndex: 2,
     ),
   ],
 );
