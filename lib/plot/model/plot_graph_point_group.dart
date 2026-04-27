@@ -1,3 +1,5 @@
+import 'package:clickless_graph/plot/model/plot_graph_axis_binding.dart';
+import 'package:clickless_graph/plot/model/plot_graph_indicator_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_line_type.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_shape.dart';
@@ -9,7 +11,9 @@ import 'package:flutter/foundation.dart';
 final class PlotGraphPointGroup {
   const PlotGraphPointGroup({
     required this.points,
-    this.trendLine,
+    this.trendLines = const [],
+    this.indicatorLines = const [],
+    this.axisBinding = PlotGraphAxisBinding.left,
     this.legend,
     this.type = PlotGraphType.line,
     this.lineType = PlotGraphLineType.solid,
@@ -18,7 +22,9 @@ final class PlotGraphPointGroup {
   });
 
   final List<PlotGraphPoint> points;
-  final PlotGraphTrendLine? trendLine;
+  final List<PlotGraphTrendLine> trendLines;
+  final List<PlotGraphIndicatorLine> indicatorLines;
+  final PlotGraphAxisBinding axisBinding;
   final String? legend;
   final PlotGraphType type;
   final PlotGraphLineType lineType;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 final class PlotGraphTheme {
   const PlotGraphTheme({
-    this.backgroundColor = Colors.transparent,
+    this.backgroundColor = Colors.white,
     this.axisLineColor = const Color(0xFFDEE4EA),
     this.disabledColor = const Color(0xFFC5D0DA),
     this.axisMarkingLineColor = const Color(0xFFC5D0DA),
@@ -141,62 +141,58 @@ final class PlotGraphTheme {
   );
 
   @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        other is PlotGraphTheme &&
-            backgroundColor == other.backgroundColor &&
-            axisLineColor == other.axisLineColor &&
-            disabledColor == other.disabledColor &&
-            axisMarkingLineColor == other.axisMarkingLineColor &&
-            indicatorLineColor == other.indicatorLineColor &&
-            trendLineColor == other.trendLineColor &&
-            axisLineWidth == other.axisLineWidth &&
-            markingLineWidth == other.markingLineWidth &&
-            pointSize == other.pointSize &&
-            barWidth == other.barWidth &&
-            axisMarkingLabelAndVerticalAxisGap ==
-                other.axisMarkingLabelAndVerticalAxisGap &&
-            axisMarkingLabelAndHorizontalAxisGap ==
-                other.axisMarkingLabelAndHorizontalAxisGap &&
-            verticalAxisLabelAndTopOfGraphGap ==
-                other.verticalAxisLabelAndTopOfGraphGap &&
-            pointLabelAndPointGap == other.pointLabelAndPointGap &&
-            legendAndBottomOfGraphGap == other.legendAndBottomOfGraphGap &&
-            legendItemsGap == other.legendItemsGap &&
-            legendPointAndLegendLabelGap ==
-                other.legendPointAndLegendLabelGap &&
-            axisMarkingLabelTextStyle == other.axisMarkingLabelTextStyle &&
-            verticalAxisLabelTextStyle == other.verticalAxisLabelTextStyle &&
-            pointLabelTextStyle == other.pointLabelTextStyle &&
-            indicatorLineLabelTextStyle == other.indicatorLineLabelTextStyle &&
-            legendTextStyle == other.legendTextStyle;
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PlotGraphTheme &&
+          backgroundColor == other.backgroundColor &&
+          axisLineColor == other.axisLineColor &&
+          disabledColor == other.disabledColor &&
+          axisMarkingLineColor == other.axisMarkingLineColor &&
+          indicatorLineColor == other.indicatorLineColor &&
+          trendLineColor == other.trendLineColor &&
+          axisLineWidth == other.axisLineWidth &&
+          markingLineWidth == other.markingLineWidth &&
+          pointSize == other.pointSize &&
+          barWidth == other.barWidth &&
+          axisMarkingLabelAndVerticalAxisGap ==
+              other.axisMarkingLabelAndVerticalAxisGap &&
+          axisMarkingLabelAndHorizontalAxisGap ==
+              other.axisMarkingLabelAndHorizontalAxisGap &&
+          verticalAxisLabelAndTopOfGraphGap ==
+              other.verticalAxisLabelAndTopOfGraphGap &&
+          pointLabelAndPointGap == other.pointLabelAndPointGap &&
+          legendAndBottomOfGraphGap == other.legendAndBottomOfGraphGap &&
+          legendItemsGap == other.legendItemsGap &&
+          legendPointAndLegendLabelGap == other.legendPointAndLegendLabelGap &&
+          axisMarkingLabelTextStyle == other.axisMarkingLabelTextStyle &&
+          verticalAxisLabelTextStyle == other.verticalAxisLabelTextStyle &&
+          pointLabelTextStyle == other.pointLabelTextStyle &&
+          indicatorLineLabelTextStyle == other.indicatorLineLabelTextStyle &&
+          legendTextStyle == other.legendTextStyle;
 
   @override
-  int get hashCode {
-    return Object.hashAll([
-      backgroundColor,
-      axisLineColor,
-      disabledColor,
-      axisMarkingLineColor,
-      indicatorLineColor,
-      trendLineColor,
-      axisLineWidth,
-      markingLineWidth,
-      pointSize,
-      barWidth,
-      axisMarkingLabelAndVerticalAxisGap,
-      axisMarkingLabelAndHorizontalAxisGap,
-      verticalAxisLabelAndTopOfGraphGap,
-      pointLabelAndPointGap,
-      legendAndBottomOfGraphGap,
-      legendItemsGap,
-      legendPointAndLegendLabelGap,
-      axisMarkingLabelTextStyle,
-      verticalAxisLabelTextStyle,
-      pointLabelTextStyle,
-      indicatorLineLabelTextStyle,
-      legendTextStyle,
-    ]);
-  }
+  int get hashCode => Object.hashAll([
+    backgroundColor,
+    axisLineColor,
+    disabledColor,
+    axisMarkingLineColor,
+    indicatorLineColor,
+    trendLineColor,
+    axisLineWidth,
+    markingLineWidth,
+    pointSize,
+    barWidth,
+    axisMarkingLabelAndVerticalAxisGap,
+    axisMarkingLabelAndHorizontalAxisGap,
+    verticalAxisLabelAndTopOfGraphGap,
+    pointLabelAndPointGap,
+    legendAndBottomOfGraphGap,
+    legendItemsGap,
+    legendPointAndLegendLabelGap,
+    axisMarkingLabelTextStyle,
+    verticalAxisLabelTextStyle,
+    pointLabelTextStyle,
+    indicatorLineLabelTextStyle,
+    legendTextStyle,
+  ]);
 }

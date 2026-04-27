@@ -41,8 +41,8 @@ const _yellow = Color(0xffffb800);
 const _blue = Color(0xff29a9ff);
 const _green = Color(0xFF16AD7E);
 
-const _sampleData = SingleVerticalAxisPlotGraphData(
-  xAxis: HorizontalPlotGraphAxis(
+const _sampleData = PlotGraphData(
+  xAxis: PlotGraphAxis(
     min: 0,
     max: 6,
     markers: [
@@ -54,8 +54,9 @@ const _sampleData = SingleVerticalAxisPlotGraphData(
       PlotGraphAxisMarking(value: 5, label: '5주 차'),
       PlotGraphAxisMarking(value: 6, label: '6주 차'),
     ],
+    showLine: true,
   ),
-  yAxis: VerticalPlotGraphAxis(
+  leftYAxis: PlotGraphAxis(
     min: 0,
     max: 12,
     markers: [
@@ -67,29 +68,26 @@ const _sampleData = SingleVerticalAxisPlotGraphData(
       PlotGraphAxisMarking(value: 2, label: '2'),
       PlotGraphAxisMarking(value: 0, label: '0'),
     ],
-    groups: [
-      PlotGraphPointGroup(
-        type: PlotGraphType.line,
-        trendLine: PlotGraphTrendLine(
+  ),
+  groups: [
+    PlotGraphPointGroup(
+      type: PlotGraphType.line,
+      points: [
+        PlotGraphPoint(x: 0, y: 12, color: _red, label: '12점'),
+        PlotGraphPoint(x: 1, y: 11, color: _red, label: '11점'),
+        PlotGraphPoint(x: 2, y: 7, color: _yellow, label: '7점'),
+        PlotGraphPoint(x: 3, y: 6, color: _yellow, label: '6점'),
+        PlotGraphPoint(x: 4, y: 5, color: _green, label: '5점'),
+        PlotGraphPoint(x: 5, y: 1, color: _blue, label: '1점'),
+        PlotGraphPoint(x: 6, y: 0, color: _blue, label: '0점'),
+      ],
+      zIndex: 3,
+      trendLines: [
+        PlotGraphTrendLine(
           start: PlotGraphPoint(x: 0, y: 84, color: _red),
           end: PlotGraphPoint(x: 6, y: 0, color: _blue),
         ),
-        points: [],
-        zIndex: 0,
-      ),
-      PlotGraphPointGroup(
-        type: PlotGraphType.line,
-        points: [
-          PlotGraphPoint(x: 0, y: 12, color: _red, label: '12점'),
-          PlotGraphPoint(x: 1, y: 11, color: _red, label: '11점'),
-          PlotGraphPoint(x: 2, y: 7, color: _yellow, label: '7점'),
-          PlotGraphPoint(x: 3, y: 6, color: _yellow, label: '6점'),
-          PlotGraphPoint(x: 4, y: 5, color: _green, label: '5점'),
-          PlotGraphPoint(x: 5, y: 1, color: _blue, label: '1점'),
-          PlotGraphPoint(x: 6, y: 0, color: _blue, label: '0점'),
-        ],
-        zIndex: 3,
-      ),
-    ],
-  ),
+      ],
+    ),
+  ],
 );

@@ -42,8 +42,8 @@ const _red = Color(0xffff4545);
 const _yellow = Color(0xffffb800);
 const _green = Color(0xFF16AD7E);
 
-const _sampleData = SingleVerticalAxisPlotGraphData(
-  xAxis: HorizontalPlotGraphAxis(
+const _sampleData = PlotGraphData(
+  xAxis: PlotGraphAxis(
     min: 0,
     max: 6,
     markers: [
@@ -55,8 +55,9 @@ const _sampleData = SingleVerticalAxisPlotGraphData(
       PlotGraphAxisMarking(value: 5, label: '5주 차'),
       PlotGraphAxisMarking(value: 6, label: '6주 차'),
     ],
+    showLine: true,
   ),
-  yAxis: VerticalPlotGraphAxis(
+  leftYAxis: PlotGraphAxis(
     min: 0,
     max: 2,
     markers: [
@@ -64,19 +65,19 @@ const _sampleData = SingleVerticalAxisPlotGraphData(
       PlotGraphAxisMarking(value: 1, label: '가끔'),
       PlotGraphAxisMarking(value: 0, label: '없음'),
     ],
-    groups: [
-      PlotGraphPointGroup(
-        type: PlotGraphType.bar,
-        points: [
-          PlotGraphPoint(x: 0, y: 2, color: _red, label: '있음'),
-          PlotGraphPoint(x: 1, y: 2, color: _red, label: '있음'),
-          PlotGraphPoint(x: 2, y: 2, color: _red, label: '있음'),
-          PlotGraphPoint(x: 3, y: 1, color: _yellow, label: '가끔'),
-          PlotGraphPoint(x: 4, y: 1, color: _yellow, label: '가끔'),
-          PlotGraphPoint(x: 5, y: 1, color: _yellow, label: '가끔'),
-          PlotGraphPoint(x: 6, y: null, color: _green, label: '없음'),
-        ],
-      ),
-    ],
   ),
+  groups: [
+    PlotGraphPointGroup(
+      type: PlotGraphType.bar,
+      points: [
+        PlotGraphPoint(x: 0, y: 2, color: _red, label: '있음'),
+        PlotGraphPoint(x: 1, y: 2, color: _red, label: '있음'),
+        PlotGraphPoint(x: 2, y: 2, color: _red, label: '있음'),
+        PlotGraphPoint(x: 3, y: 1, color: _yellow, label: '가끔'),
+        PlotGraphPoint(x: 4, y: 1, color: _yellow, label: '가끔'),
+        PlotGraphPoint(x: 5, y: 1, color: _yellow, label: '가끔'),
+        PlotGraphPoint(x: 6, y: null, color: _green, label: '없음'),
+      ],
+    ),
+  ],
 );

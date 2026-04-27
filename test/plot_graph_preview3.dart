@@ -38,8 +38,8 @@ final class PlotGraphPreview3App extends StatelessWidget {
 
 const _blue = Color(0xff29a9ff);
 
-const _sampleData = SingleVerticalAxisPlotGraphData(
-  xAxis: HorizontalPlotGraphAxis(
+const _sampleData = PlotGraphData(
+  xAxis: PlotGraphAxis(
     min: 0,
     max: 6,
     markers: [
@@ -51,8 +51,9 @@ const _sampleData = SingleVerticalAxisPlotGraphData(
       PlotGraphAxisMarking(value: 5, label: '5주 차'),
       PlotGraphAxisMarking(value: 6, label: '6주 차'),
     ],
+    showLine: true,
   ),
-  yAxis: VerticalPlotGraphAxis(
+  leftYAxis: PlotGraphAxis(
     min: 0,
     max: 10,
     markers: [
@@ -63,22 +64,22 @@ const _sampleData = SingleVerticalAxisPlotGraphData(
       PlotGraphAxisMarking(value: 2, label: '2'),
       PlotGraphAxisMarking(value: 0, label: '0'),
     ],
-    groups: [
-      PlotGraphPointGroup(
-        type: PlotGraphType.bar,
-        points: [
-          PlotGraphPoint(x: 0, y: 9, color: _blue, label: '9점'),
-          PlotGraphPoint(x: 1, y: 8, color: _blue, label: '8점'),
-          PlotGraphPoint(x: 2, y: 7, color: _blue, label: '7점'),
-          PlotGraphPoint(x: 3, y: 5, color: _blue, label: '5점'),
-          PlotGraphPoint(x: 4, y: 4, color: _blue, label: '4점'),
-          PlotGraphPoint(x: 5, y: 2, color: _blue, label: '2점'),
-          PlotGraphPoint(x: 6, y: 1, color: _blue, label: '1점'),
-        ],
-        zIndex: 11,
-      ),
-    ],
-    indicatorLines: [PlotGraphIndicatorLine(value: 7.32, label: '평균')],
     showLine: true,
   ),
+  groups: [
+    PlotGraphPointGroup(
+      type: PlotGraphType.bar,
+      points: [
+        PlotGraphPoint(x: 0, y: 9, color: _blue, label: '9점'),
+        PlotGraphPoint(x: 1, y: 8, color: _blue, label: '8점'),
+        PlotGraphPoint(x: 2, y: 7, color: _blue, label: '7점'),
+        PlotGraphPoint(x: 3, y: 5, color: _blue, label: '5점'),
+        PlotGraphPoint(x: 4, y: 4, color: _blue, label: '4점'),
+        PlotGraphPoint(x: 5, y: 2, color: _blue, label: '2점'),
+        PlotGraphPoint(x: 6, y: 1, color: _blue, label: '1점'),
+      ],
+      zIndex: 11,
+      indicatorLines: [PlotGraphIndicatorLine(value: 7.32, label: '평균')],
+    ),
+  ],
 );

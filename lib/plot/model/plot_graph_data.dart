@@ -1,31 +1,18 @@
 import 'package:clickless_graph/plot/model/plot_graph_axis.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-sealed class PlotGraphData {
-  const PlotGraphData({required this.xAxis});
-
-  final HorizontalPlotGraphAxis xAxis;
-}
-
-@immutable
-final class SingleVerticalAxisPlotGraphData extends PlotGraphData {
-  const SingleVerticalAxisPlotGraphData({
-    required super.xAxis,
-    required this.yAxis,
+final class PlotGraphData {
+  const PlotGraphData({
+    required this.xAxis,
+    required this.leftYAxis,
+    this.rightYAxis,
+    required this.groups,
   });
 
-  final VerticalPlotGraphAxis yAxis;
-}
-
-@immutable
-final class MultiVerticalAxisPlotGraphData extends PlotGraphData {
-  const MultiVerticalAxisPlotGraphData({
-    required super.xAxis,
-    required this.y1Axis,
-    required this.y2Axis,
-  });
-
-  final VerticalPlotGraphAxis y1Axis;
-  final VerticalPlotGraphAxis y2Axis;
+  final PlotGraphAxis xAxis;
+  final PlotGraphAxis leftYAxis;
+  final PlotGraphAxis? rightYAxis;
+  final List<PlotGraphPointGroup> groups;
 }

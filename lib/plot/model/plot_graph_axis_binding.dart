@@ -1,0 +1,1 @@
+enum PlotGraphAxisBinding { left, right }

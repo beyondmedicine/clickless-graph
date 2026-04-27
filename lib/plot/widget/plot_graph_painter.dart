@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:clickless_graph/common/util/canvas_extension.dart';
 import 'package:clickless_graph/plot/model/plot_graph_axis.dart';
 import 'package:clickless_graph/plot/model/plot_graph_data.dart';
+import 'package:clickless_graph/plot/model/plot_graph_indicator_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_line_type.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_shape.dart';
@@ -36,34 +37,53 @@ final class PlotGraphPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawColor(theme.backgroundColor, BlendMode.src);
 
+    // 그래프가 그려질 영역의 크기 산정
     final plotArea = _getPlotArea(size);
 
+    // 축 라벨 그리기
     _drawAxisLabels(canvas, size);
 
+    // 세로축 눈금 그리기
     _drawYAxisMarkings(canvas, size, plotArea);
 
+    // 가로축 눈금 그리기
     _drawXAxisMarking(canvas, plotArea);
 
-    for (final axis in data.yAxes) {
-      _drawYAxisIndicatorLines(canvas, plotArea, axis);
+    // 추세선 그리기
+    for (final group in data.groups) {
+      for (final trendLine in group.trendLines) {
+        final axis = data.getAxisFromBinding(group.axisBinding);
+
+        if (axis != null) {
+          _drawTrendLine(canvas, plotArea, axis, trendLine);
+        }
+      }
     }
 
-    final barGroupCount = data.yAxes
-        .expand((axis) => axis.groups)
+    // 보조선 그리기
+    for (final group in data.groups) {
+      for (final indicatorLine in group.indicatorLines) {
+        final axis = data.getAxisFromBinding(group.axisBinding);
+
+        if (axis != null) {
+          _drawYAxisIndicatorLine(canvas, plotArea, axis, indicatorLine);
+        }
+      }
+    }
+
+    final barGroupCount = data.groups
         .where((group) => group.type == PlotGraphType.bar)
         .length;
 
     var barGroupIndex = 0;
 
-    for (final pair
-        in data.yAxes
-            .expand(
-              (axis) => axis.groups.map((group) => (axis: axis, group: group)),
-            )
-            .toList()
-          ..sort((a, b) => a.group.zIndex - b.group.zIndex)) {
-      final axis = pair.axis;
-      final group = pair.group;
+    // 그래프 데이터 그리기
+    for (final group in [...data.groups]..sort((a, b) => a.zIndex - b.zIndex)) {
+      final axis = data.getAxisFromBinding(group.axisBinding);
+
+      if (axis == null) {
+        continue;
+      }
 
       switch (group.type) {
         case PlotGraphType.bar:
@@ -85,22 +105,22 @@ final class PlotGraphPainter extends CustomPainter {
       }
     }
 
+    // 그래프 축 라인 그리기
     _drawAxisLines(canvas, plotArea);
 
+    // 범례 그리기
     if (data.hasLegend) {
       _drawLegend(canvas, plotArea);
     }
   }
 
-  static const int _pointSize = 6;
-
   Rect _getPlotArea(Size size) {
-    final leftAxis = data.leftAxis;
-    final rightAxis = data.rightAxis;
+    final leftYAxis = data.leftYAxis;
+    final rightYAxis = data.rightYAxis;
 
-    final double leftSpace = leftAxis.hasMarkingLabel
+    final double leftSpace = leftYAxis.hasMarkingLabel
         ? getMaxTextSize(
-                leftAxis.markers
+                leftYAxis.markers
                     .map((marker) => marker.label)
                     .whereType<String>(),
                 theme.axisMarkingLabelTextStyle,
@@ -108,9 +128,9 @@ final class PlotGraphPainter extends CustomPainter {
               theme.axisMarkingLabelAndVerticalAxisGap
         : 0;
 
-    final double rightSpace = rightAxis != null && rightAxis.hasMarkingLabel
+    final double rightSpace = rightYAxis != null && rightYAxis.hasMarkingLabel
         ? getMaxTextSize(
-                rightAxis.markers
+                rightYAxis.markers
                     .map((marker) => marker.label)
                     .whereType<String>(),
                 theme.axisMarkingLabelTextStyle,
@@ -121,17 +141,16 @@ final class PlotGraphPainter extends CustomPainter {
     final double spaceDerivedFromVerticalAxisLabels = <double>[
       // 보조 라인 라벨 고려
       getMaxTextSize(
-            data.yAxes
-                .expand((axis) => axis.indicatorLines)
+            data.allIndicatorLines
                 .map((indicatorLine) => indicatorLine.label)
                 .whereType<String>(),
             theme.indicatorLineLabelTextStyle,
           ).height /
           2,
       // 왼쪽 세로 축 눈금 라벨 고려
-      leftAxis.hasMarkingLabel
+      leftYAxis.hasMarkingLabel
           ? getMaxTextSize(
-                  leftAxis.markers
+                  leftYAxis.markers
                       .map((marker) => marker.label)
                       .whereType<String>(),
                   theme.axisMarkingLabelTextStyle,
@@ -139,9 +158,9 @@ final class PlotGraphPainter extends CustomPainter {
                 2
           : 0,
       // 오른쪽 세로 축 눈금 라벨 고려
-      rightAxis != null && rightAxis.hasMarkingLabel
+      rightYAxis != null && rightYAxis.hasMarkingLabel
           ? getMaxTextSize(
-                  rightAxis.markers
+                  rightYAxis.markers
                       .map((marker) => marker.label)
                       .whereType<String>(),
                   theme.axisMarkingLabelTextStyle,
@@ -188,7 +207,7 @@ final class PlotGraphPainter extends CustomPainter {
           // 범례 고려
           data.hasLegend
               ? getMaxTextSize(
-                      data.allPointGroups
+                      data.groups
                           .map((group) => group.legend)
                           .whereType<String>(),
                       theme.legendTextStyle,
@@ -207,20 +226,20 @@ final class PlotGraphPainter extends CustomPainter {
   }
 
   void _drawAxisLabels(Canvas canvas, Size size) {
-    final leftAxisLabel = data.leftAxis.label;
-    final rightAxisLabel = data.rightAxis?.label;
+    final leftYAxisLabel = data.leftYAxis.label;
+    final rightYAxisLabel = data.rightYAxis?.label;
 
-    if (leftAxisLabel != null) {
+    if (leftYAxisLabel != null) {
       canvas.drawText(
-        leftAxisLabel,
+        leftYAxisLabel,
         theme.axisMarkingLabelTextStyle,
         Offset.zero,
       );
     }
 
-    if (rightAxisLabel != null) {
+    if (rightYAxisLabel != null) {
       canvas.drawText(
-        rightAxisLabel,
+        rightYAxisLabel,
         theme.axisMarkingLabelTextStyle,
         Offset(size.width, 0),
         textAlign: TextAlign.right,
@@ -229,16 +248,16 @@ final class PlotGraphPainter extends CustomPainter {
   }
 
   void _drawYAxisMarkings(Canvas canvas, Size size, Rect plot) {
-    final leftAxis = data.leftAxis;
-    final rightAxis = data.rightAxis;
+    final leftYAxis = data.leftYAxis;
+    final rightYAxis = data.rightYAxis;
 
     final gridPaint = Paint()
       ..color = theme.axisMarkingLineColor
       ..strokeWidth = theme.markingLineWidth;
 
-    for (final marker in leftAxis.markers) {
+    for (final marker in leftYAxis.markers) {
       final label = marker.label;
-      final y = _mapY(marker.value, leftAxis, plot);
+      final y = _mapY(marker.value, leftYAxis, plot);
 
       canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
 
@@ -254,10 +273,10 @@ final class PlotGraphPainter extends CustomPainter {
       }
     }
 
-    if (rightAxis != null) {
-      for (final marker in rightAxis.markers) {
+    if (rightYAxis != null) {
+      for (final marker in rightYAxis.markers) {
         final label = marker.label;
-        final y = _mapY(marker.value, rightAxis, plot);
+        final y = _mapY(marker.value, rightYAxis, plot);
 
         canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
 
@@ -312,43 +331,42 @@ final class PlotGraphPainter extends CustomPainter {
     }
   }
 
-  void _drawYAxisIndicatorLines(
+  void _drawYAxisIndicatorLine(
     Canvas canvas,
     Rect plot,
-    VerticalPlotGraphAxis axis,
+    PlotGraphAxis axis,
+    PlotGraphIndicatorLine line,
   ) {
-    for (final line in axis.indicatorLines) {
-      final y = _mapY(line.value, axis, plot);
+    final y = _mapY(line.value, axis, plot);
 
-      canvas.drawDashedLine(
-        Offset(plot.left, y),
-        Offset(plot.right, y),
-        color: theme.indicatorLineColor,
-        strokeWidth: 1,
-        dashWidth: 4,
-        gapWidth: 2,
+    canvas.drawDashedLine(
+      Offset(plot.left, y),
+      Offset(plot.right, y),
+      color: theme.indicatorLineColor,
+      strokeWidth: 1,
+      dashWidth: 4,
+      gapWidth: 2,
+    );
+
+    if (line.label != null) {
+      final label = '${line.label}\n${_formatNumber(line.value)}';
+
+      canvas.drawText(
+        label,
+        theme.indicatorLineLabelTextStyle,
+        Offset(
+          plot.right - 4,
+          y - getTextSize(label, theme.axisMarkingLabelTextStyle).height / 2,
+        ),
+        textAlign: TextAlign.center,
       );
-
-      if (line.label != null) {
-        final label = '${line.label}\n${_formatNumber(line.value)}';
-
-        canvas.drawText(
-          label,
-          theme.indicatorLineLabelTextStyle,
-          Offset(
-            plot.right - 4,
-            y - getTextSize(label, theme.axisMarkingLabelTextStyle).height / 2,
-          ),
-          textAlign: TextAlign.center,
-        );
-      }
     }
   }
 
   void _drawBarPointGroup({
     required Canvas canvas,
     required Rect plot,
-    required VerticalPlotGraphAxis axis,
+    required PlotGraphAxis axis,
     required PlotGraphPointGroup group,
     required int barGroupCount,
     required int barGroupIndex,
@@ -398,15 +416,9 @@ final class PlotGraphPainter extends CustomPainter {
   void _drawLinePointGroup({
     required Canvas canvas,
     required Rect plot,
-    required VerticalPlotGraphAxis axis,
+    required PlotGraphAxis axis,
     required PlotGraphPointGroup group,
   }) {
-    final trendLine = group.trendLine;
-
-    if (trendLine != null) {
-      _drawTrendLine(canvas, plot, axis, trendLine);
-    }
-
     final points = [...group.points]..sort((a, b) => a.x.compareTo(b.x));
 
     for (var i = 0; i < points.length - 1; i += 1) {
@@ -466,7 +478,7 @@ final class PlotGraphPainter extends CustomPainter {
           Offset(
             center.dx - textSize.width / 2,
             center.dy -
-                _pointSize / 2 -
+                theme.pointSize / 2 -
                 theme.pointLabelAndPointGap -
                 textSize.height,
           ),
@@ -480,7 +492,7 @@ final class PlotGraphPainter extends CustomPainter {
   void _drawTrendLine(
     Canvas canvas,
     Rect plot,
-    VerticalPlotGraphAxis axis,
+    PlotGraphAxis axis,
     PlotGraphTrendLine trendLine,
   ) {
     final startY = trendLine.start.y;
@@ -510,13 +522,19 @@ final class PlotGraphPainter extends CustomPainter {
 
     switch (shape) {
       case PlotGraphPointShape.circle:
-        canvas.drawCircle(center, _pointSize / 2, paint);
+        canvas.drawCircle(center, theme.pointSize / 2, paint);
 
       case PlotGraphPointShape.triangle:
         final path = Path()
-          ..moveTo(center.dx, center.dy - _pointSize / 2)
-          ..lineTo(center.dx - _pointSize / 2, center.dy + _pointSize / 2)
-          ..lineTo(center.dx + _pointSize / 2, center.dy + _pointSize / 2)
+          ..moveTo(center.dx, center.dy - theme.pointSize / 2)
+          ..lineTo(
+            center.dx - theme.pointSize / 2,
+            center.dy + theme.pointSize / 2,
+          )
+          ..lineTo(
+            center.dx + theme.pointSize / 2,
+            center.dy + theme.pointSize / 2,
+          )
           ..close();
 
         canvas.drawPath(path, paint);
@@ -530,8 +548,8 @@ final class PlotGraphPainter extends CustomPainter {
       ..color = theme.axisLineColor
       ..strokeWidth = width;
 
-    final leftAxis = data.leftAxis;
-    final rightAxis = data.rightAxis;
+    final leftYAxis = data.leftYAxis;
+    final rightYAxis = data.rightYAxis;
 
     if (data.xAxis.showLine) {
       final axisPaint = Paint()
@@ -545,7 +563,7 @@ final class PlotGraphPainter extends CustomPainter {
       );
     }
 
-    if (leftAxis.showLine) {
+    if (leftYAxis.showLine) {
       canvas.drawLine(
         plot.topLeft + Offset(width / 2, width / 2),
         plot.bottomLeft + Offset(width / 2, -width / 2),
@@ -553,7 +571,7 @@ final class PlotGraphPainter extends CustomPainter {
       );
     }
 
-    if (rightAxis?.showLine ?? false) {
+    if (rightYAxis?.showLine ?? false) {
       canvas.drawLine(
         plot.topRight + Offset(-width / 2, width / 2),
         plot.bottomRight + Offset(-width / 2, -width / 2),
@@ -563,7 +581,7 @@ final class PlotGraphPainter extends CustomPainter {
   }
 
   void _drawLegend(Canvas canvas, Rect plot) {
-    final legendGroups = data.allPointGroups
+    final legendGroups = data.groups
         .where((group) => group.legend != null)
         .toList();
 
@@ -577,7 +595,7 @@ final class PlotGraphPainter extends CustomPainter {
       final legend = group.legend;
 
       itemWidths.add(
-        _pointSize +
+        theme.pointSize +
             (legend != null
                 ? theme.legendPointAndLegendLabelGap +
                       getTextSize(legend, theme.legendTextStyle).width
@@ -626,7 +644,7 @@ final class PlotGraphPainter extends CustomPainter {
         canvas.drawText(
           legend,
           theme.legendTextStyle,
-          Offset(x + _pointSize + theme.legendPointAndLegendLabelGap, y),
+          Offset(x + theme.pointSize + theme.legendPointAndLegendLabelGap, y),
         );
       }
 
@@ -683,7 +701,7 @@ final class PlotGraphPainter extends CustomPainter {
     return plot.left + plot.width * normalized;
   }
 
-  double _mapY(num value, VerticalPlotGraphAxis axis, Rect plot) {
+  double _mapY(num value, PlotGraphAxis axis, Rect plot) {
     final min = axis.min.toDouble();
     final max = axis.max.toDouble();
 
@@ -695,6 +713,7 @@ final class PlotGraphPainter extends CustomPainter {
     return plot.bottom - plot.height * normalized;
   }
 
+  // TODO: 해당 로직은 x축의 눈금이 등차수열이 아닐 경우를 대비하지 못함
   double _getSlotWidth(Rect plot) => data.xAxis.markers.isNotEmpty
       ? plot.width / data.xAxis.markers.length
       : plot.width;
