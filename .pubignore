@@ -1,0 +1,11 @@
+/*
+
+!lib/
+!lib/**
+!assets/
+!assets/**
+
+!pubspec.yaml
+!README.md
+!LICENSE
+!CHANGELOG.md
