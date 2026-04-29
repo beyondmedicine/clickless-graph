@@ -33,7 +33,10 @@ final class PolygonGraphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawColor(theme.backgroundColor, BlendMode.src);
+    canvas.drawRect(
+      Offset.zero & size,
+      Paint()..color = theme.backgroundColor,
+    );
 
     if (data.axes.length < 3) {
       return;

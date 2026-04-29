@@ -35,7 +35,10 @@ final class PlotGraphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawColor(theme.backgroundColor, BlendMode.src);
+    canvas.drawRect(
+      Offset.zero & size,
+      Paint()..color = theme.backgroundColor,
+    );
 
     // 그래프가 그려질 영역의 크기 산정
     final plotArea = _getPlotArea(size);
