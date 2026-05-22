@@ -79,7 +79,7 @@ const _sampleData = PlotGraphData(
         PlotGraphPoint(x: 6, y: 1, color: _blue, label: '1점'),
       ],
       zIndex: 11,
-      indicatorLines: [PlotGraphIndicatorLine(value: 7.32, label: '평균')],
+      indicatorLines: [PlotGraphIndicatorLine(value: 7.32, label: '평균\n7.3')],
     ),
   ],
 );
