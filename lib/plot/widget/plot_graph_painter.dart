@@ -35,10 +35,7 @@ final class PlotGraphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..color = theme.backgroundColor,
-    );
+    canvas.drawRect(Offset.zero & size, Paint()..color = theme.backgroundColor);
 
     // 그래프가 그려질 영역의 크기 산정
     final plotArea = _getPlotArea(size);
@@ -353,9 +350,9 @@ final class PlotGraphPainter extends CustomPainter {
       gapWidth: 2,
     );
 
-    if (line.label != null) {
-      final label = '${line.label}\n${_formatNumber(line.value)}';
-
+    final label = line.label;
+    
+    if (label != null) {
       canvas.drawText(
         label,
         theme.indicatorLineLabelTextStyle,
