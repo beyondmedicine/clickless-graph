@@ -280,7 +280,13 @@ final class PlotGraphPainter extends CustomPainter {
         final label = marker.label;
         final y = _mapY(marker.value, rightYAxis, plot);
 
-        canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
+        if (marker.showLine) {
+          canvas.drawLine(
+            Offset(plot.left, y),
+            Offset(plot.right, y),
+            gridPaint,
+          );
+        }
 
         if (label != null) {
           canvas.drawText(
@@ -351,7 +357,7 @@ final class PlotGraphPainter extends CustomPainter {
     );
 
     final label = line.label;
-    
+
     if (label != null) {
       canvas.drawText(
         label,
@@ -719,12 +725,4 @@ final class PlotGraphPainter extends CustomPainter {
   double _getSlotWidth(Rect plot) => data.xAxis.markers.isNotEmpty
       ? plot.width / data.xAxis.markers.length
       : plot.width;
-
-  static String _formatNumber(num value) {
-    final asDouble = value.toDouble();
-
-    return (asDouble - asDouble.roundToDouble()).abs() < 0.001
-        ? asDouble.round().toString()
-        : asDouble.toStringAsFixed(1);
-  }
 }
