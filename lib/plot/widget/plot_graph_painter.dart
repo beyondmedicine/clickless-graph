@@ -262,7 +262,9 @@ final class PlotGraphPainter extends CustomPainter {
       final label = marker.label;
       final y = _mapY(marker.value, leftYAxis, plot);
 
-      canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
+      if (marker.showLine) {
+        canvas.drawLine(Offset(plot.left, y), Offset(plot.right, y), gridPaint);
+      }
 
       if (label != null) {
         canvas.drawText(
