@@ -15,20 +15,8 @@ final class PolygonGraphTheme {
     this.pointSize = 6,
     this.markingLabelPadding = 4,
     this.verticeAndAxisLabelCenterGap = 12,
-    this.axisLabelTextStyle = const TextStyle(
-      color: Color(0xFF8D9BA8),
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      letterSpacing: -0.24,
-      height: 1.4,
-    ),
-    this.markingLabelTextStyle = const TextStyle(
-      color: Color(0xFF8D9BA8),
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      letterSpacing: -0.24,
-      height: 1.4,
-    ),
+    this.axisLabelTextStyle = defaultAxisLabelTextStyle,
+    this.markingLabelTextStyle = defaultMarkingLabelTextStyle,
   });
 
   final Color backgroundColor;
@@ -48,6 +36,21 @@ final class PolygonGraphTheme {
 
   final TextStyle axisLabelTextStyle;
   final TextStyle markingLabelTextStyle;
+  
+  static const TextStyle defaultAxisLabelTextStyle = TextStyle(
+    color: Color(0xFF8D9BA8),
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.24,
+    height: 1.4,
+  );
+  static const TextStyle defaultMarkingLabelTextStyle = TextStyle(
+    color: Color(0xFF8D9BA8),
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.24,
+    height: 1.4,
+  );
 
   PolygonGraphTheme copyWith({
     Color? backgroundColor,
