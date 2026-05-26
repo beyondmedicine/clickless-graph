@@ -19,40 +19,11 @@ final class PlotGraphTheme {
     this.legendAndBottomOfGraphGap = 16,
     this.legendItemsGap = 16,
     this.legendPointAndLegendLabelGap = 6,
-    this.axisMarkingLabelTextStyle = const TextStyle(
-      color: Color(0xFF8D9BA8),
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      letterSpacing: -0.24,
-      height: 1.4,
-    ),
-    this.verticalAxisLabelTextStyle = const TextStyle(
-      color: Color(0xFF8D9BA8),
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      letterSpacing: -0.24,
-      height: 1.4,
-    ),
-    this.pointLabelTextStyle = const TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      letterSpacing: -0.24,
-      height: 1.4,
-    ),
-    this.indicatorLineLabelTextStyle = const TextStyle(
-      color: Color(0xFF8D9BA8),
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      letterSpacing: -0.24,
-      height: 1.4,
-    ),
-    this.legendTextStyle = const TextStyle(
-      color: Color(0xFF8D9BA8),
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      letterSpacing: -0.24,
-      height: 1.4,
-    ),
+    this.axisMarkingLabelTextStyle = defaultAxisMarkingLabelTextStyle,
+    this.verticalAxisLabelTextStyle = defaultVerticalAxisLabelTextStyle,
+    this.pointLabelTextStyle = defaultPointLabelTextStyle,
+    this.indicatorLineLabelTextStyle = defaultIndicatorLineLabelTextStyle,
+    this.legendTextStyle = defaultLegendTextStyle,
   });
 
   final Color backgroundColor;
@@ -80,6 +51,41 @@ final class PlotGraphTheme {
   final TextStyle pointLabelTextStyle;
   final TextStyle indicatorLineLabelTextStyle;
   final TextStyle legendTextStyle;
+
+  static const TextStyle defaultAxisMarkingLabelTextStyle = TextStyle(
+    color: Color(0xFF8D9BA8),
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.24,
+    height: 1.4,
+  );
+  static const TextStyle defaultVerticalAxisLabelTextStyle = TextStyle(
+    color: Color(0xFF8D9BA8),
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.24,
+    height: 1.4,
+  );
+  static const TextStyle defaultPointLabelTextStyle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.24,
+    height: 1.4,
+  );
+  static const TextStyle defaultIndicatorLineLabelTextStyle = TextStyle(
+    color: Color(0xFF8D9BA8),
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.24,
+    height: 1.4,
+  );
+  static const TextStyle defaultLegendTextStyle = TextStyle(
+    color: Color(0xFF8D9BA8),
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.24,
+    height: 1.4,
+  );
 
   PlotGraphTheme copyWith({
     Color? backgroundColor,
