@@ -19,6 +19,9 @@ final class PlotGraphPointGroup {
     this.lineType = PlotGraphLineType.solid,
     this.pointShape = PlotGraphPointShape.circle,
     this.zIndex = 0,
+    this.lineWidth = 1.5,
+    this.dashedLineLength = 4,
+    this.dashedLineGap = 2,
   });
 
   final List<PlotGraphPoint> points;
@@ -30,4 +33,7 @@ final class PlotGraphPointGroup {
   final PlotGraphLineType lineType;
   final PlotGraphPointShape pointShape;
   final int zIndex;
+  final double lineWidth;
+  final double dashedLineLength;
+  final double dashedLineGap;
 }

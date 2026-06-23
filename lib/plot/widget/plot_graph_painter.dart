@@ -448,9 +448,9 @@ final class PlotGraphPainter extends CustomPainter {
             start,
             end,
             color: color,
-            strokeWidth: 1.5,
-            dashWidth: 4,
-            gapWidth: 2,
+            strokeWidth: group.lineWidth,
+            dashWidth: group.dashedLineLength,
+            gapWidth: group.dashedLineGap,
           );
 
         case PlotGraphLineType.solid:
@@ -459,7 +459,7 @@ final class PlotGraphPainter extends CustomPainter {
             end,
             Paint()
               ..color = color
-              ..strokeWidth = 1.5
+              ..strokeWidth = group.lineWidth
               ..strokeCap = StrokeCap.round,
           );
       }
