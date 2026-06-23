@@ -25,11 +25,9 @@ final class PolygonGraphLayout {
     0,
     min(
       size.width / 2 -
-          maxAxisLabelSize.width / 2 +
-          theme.verticeAndAxisLabelCenterGap,
+          (maxAxisLabelSize.width / 2 + theme.verticeAndAxisLabelCenterGap),
       size.height / 2 -
-          maxAxisLabelSize.height / 2 +
-          theme.verticeAndAxisLabelCenterGap,
+          (maxAxisLabelSize.height / 2 + theme.verticeAndAxisLabelCenterGap),
     ),
   );
 
