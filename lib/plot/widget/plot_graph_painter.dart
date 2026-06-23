@@ -5,7 +5,6 @@ import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_indicator_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_line_type.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
-import 'package:clickless_graph/plot/model/plot_graph_point_shape.dart';
 import 'package:clickless_graph/plot/model/plot_graph_trend_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_type.dart';
 import 'package:clickless_graph/plot/util/graph_axis_extension.dart';
@@ -13,6 +12,7 @@ import 'package:clickless_graph/plot/util/graph_data_extension.dart';
 import 'package:clickless_graph/common/util/get_max_text_size.dart';
 import 'package:clickless_graph/common/util/get_text_size.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
+import 'package:clickless_graph/plot/util/canvas_paint_extension.dart';
 import 'package:flutter/material.dart';
 
 final class PlotGraphPainter extends CustomPainter {
@@ -107,11 +107,6 @@ final class PlotGraphPainter extends CustomPainter {
 
     // 그래프 축 라인 그리기
     _drawAxisLines(canvas, plotArea);
-
-    // 범례 그리기
-    if (data.hasLegend) {
-      _drawLegend(canvas, plotArea);
-    }
   }
 
   Rect _getPlotArea(Size size) {
@@ -203,18 +198,7 @@ final class PlotGraphPainter extends CustomPainter {
                     ).height +
                     theme.axisMarkingLabelAndHorizontalAxisGap
               : 0) +
-          (
-          // 범례 고려
-          data.hasLegend
-              ? getMaxTextSize(
-                      data.groups
-                          .map((group) => group.legend)
-                          .whereType<String>(),
-                      theme.legendTextStyle,
-                    ).height +
-                    theme.legendAndBottomOfGraphGap
-              : 0),
-      spaceDerivedFromVerticalAxisLabels,
+          spaceDerivedFromVerticalAxisLabels,
     ].fold(0.0, (acc, value) => max(acc, value));
 
     return Rect.fromLTRB(
@@ -475,7 +459,12 @@ final class PlotGraphPainter extends CustomPainter {
 
       final center = Offset(_mapX(point.x, plot), _mapY(y, axis, plot));
 
-      _drawPoint(canvas, center, color: point.color, shape: group.pointShape);
+      canvas.drawPoint(
+        center: center,
+        size: theme.pointSize,
+        color: point.color,
+        shape: group.pointShape,
+      );
 
       if (label != null) {
         final textSize = getTextSize(label, theme.pointLabelTextStyle);
@@ -520,35 +509,6 @@ final class PlotGraphPainter extends CustomPainter {
     );
   }
 
-  void _drawPoint(
-    Canvas canvas,
-    Offset center, {
-    required Color color,
-    required PlotGraphPointShape shape,
-  }) {
-    final paint = Paint()..color = color;
-
-    switch (shape) {
-      case PlotGraphPointShape.circle:
-        canvas.drawCircle(center, theme.pointSize / 2, paint);
-
-      case PlotGraphPointShape.triangle:
-        final path = Path()
-          ..moveTo(center.dx, center.dy - theme.pointSize / 2)
-          ..lineTo(
-            center.dx - theme.pointSize / 2,
-            center.dy + theme.pointSize / 2,
-          )
-          ..lineTo(
-            center.dx + theme.pointSize / 2,
-            center.dy + theme.pointSize / 2,
-          )
-          ..close();
-
-        canvas.drawPath(path, paint);
-    }
-  }
-
   void _drawAxisLines(Canvas canvas, Rect plot) {
     final width = theme.axisLineWidth;
 
@@ -586,90 +546,6 @@ final class PlotGraphPainter extends CustomPainter {
         axisLinePaint,
       );
     }
-  }
-
-  void _drawLegend(Canvas canvas, Rect plot) {
-    final legendGroups = data.groups
-        .where((group) => group.legend != null)
-        .toList();
-
-    if (legendGroups.isEmpty) {
-      return;
-    }
-
-    final itemWidths = <double>[];
-
-    for (final group in legendGroups) {
-      final legend = group.legend;
-
-      itemWidths.add(
-        theme.pointSize +
-            (legend != null
-                ? theme.legendPointAndLegendLabelGap +
-                      getTextSize(legend, theme.legendTextStyle).width
-                : 0),
-      );
-    }
-
-    final totalWidth =
-        itemWidths.fold(0.0, (sum, width) => sum + width) +
-        theme.legendItemsGap * max(0, legendGroups.length - 1);
-
-    var x = plot.center.dx - totalWidth / 2;
-
-    final y =
-        plot.bottom +
-        (data.hasHorizontalAxisMarkingLabel
-            ? getMaxTextSize(
-                    data.xAxis.markers
-                        .map((marker) => marker.label)
-                        .whereType<String>(),
-                    theme.axisMarkingLabelTextStyle,
-                  ).height +
-                  theme.axisMarkingLabelAndHorizontalAxisGap
-            : 0) +
-        theme.legendAndBottomOfGraphGap;
-
-    for (var i = 0; i < legendGroups.length; i += 1) {
-      final group = legendGroups[i];
-      final color = _legendColor(group);
-      final iconCenter = Offset(x + 3, y + 8.5);
-      final legend = group.legend;
-
-      if (group.type == PlotGraphType.bar) {
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromCenter(center: iconCenter, width: 6, height: 6),
-            const Radius.circular(1.5),
-          ),
-          Paint()..color = color,
-        );
-      } else {
-        _drawPoint(canvas, iconCenter, color: color, shape: group.pointShape);
-      }
-
-      if (legend != null) {
-        canvas.drawText(
-          legend,
-          theme.legendTextStyle,
-          Offset(x + theme.pointSize + theme.legendPointAndLegendLabelGap, y),
-        );
-      }
-
-      x += itemWidths[i] + theme.legendItemsGap;
-    }
-  }
-
-  Color _legendColor(PlotGraphPointGroup group) {
-    for (final point in group.points) {
-      if (point.y != null) {
-        return point.color;
-      }
-    }
-
-    return group.points.isEmpty
-        ? theme.disabledColor
-        : group.points.first.color;
   }
 
   double _mapX(num value, Rect plot) {

@@ -17,6 +17,7 @@
 /windows
 .metadata
 clickless_graph.iml
+**/.DS_Store
 
 # Flutter repo-specific
 /bin/cache/

@@ -21,6 +21,8 @@ extension GraphDataExtension on PlotGraphData {
         PlotGraphAxisBinding.right => rightYAxis,
       };
 
+  bool get hasTitle => title != null;
+
   bool get hasLegend => groups.any((group) => group.legend != null);
 
   bool get hasVerticalAxisLabel => yAxes.any((axis) => axis.label != null);
