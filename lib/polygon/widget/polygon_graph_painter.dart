@@ -1,13 +1,13 @@
 import 'dart:math';
 
 import 'package:clickless_graph/common/util/canvas_extension.dart';
-import 'package:clickless_graph/common/util/get_max_text_size.dart';
 import 'package:clickless_graph/common/util/get_text_size.dart';
 import 'package:clickless_graph/polygon/model/polygon_graph_axis.dart';
 import 'package:clickless_graph/polygon/model/polygon_graph_data.dart';
 import 'package:clickless_graph/polygon/model/polygon_graph_indicator_line.dart';
 import 'package:clickless_graph/polygon/model/polygon_graph_point_group.dart';
 import 'package:clickless_graph/polygon/theme/polygon_graph_theme.dart';
+import 'package:clickless_graph/polygon/util/polygon_graph_layout.dart';
 import 'package:flutter/material.dart';
 
 final class PolygonGraphPainter extends CustomPainter {
@@ -21,8 +21,11 @@ final class PolygonGraphPainter extends CustomPainter {
   final PolygonGraphTheme theme;
   final TextDirection textDirection;
 
-  late final double radius;
-  late final Offset center;
+  late PolygonGraphLayout layout;
+
+  double get radius => layout.radius;
+
+  Offset get center => layout.center;
 
   @override
   bool shouldRepaint(covariant PolygonGraphPainter oldDelegate) {
@@ -33,17 +36,18 @@ final class PolygonGraphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..color = theme.backgroundColor,
-    );
+    canvas.drawRect(Offset.zero & size, Paint()..color = theme.backgroundColor);
 
     if (data.axes.length < 3) {
       return;
     }
 
-    // 레이아웃 초깃값 계산
-    _initializeLayout(size);
+    layout = PolygonGraphLayout(
+      size: size,
+      data: data,
+      theme: theme,
+      textDirection: textDirection,
+    );
 
     if (radius < 0.1) {
       return;
@@ -80,28 +84,6 @@ final class PolygonGraphPainter extends CustomPainter {
     }
   }
 
-  void _initializeLayout(Size size) {
-    final maxAxisLabelSize = getMaxTextSize(
-      data.axes.map((axis) => axis.label),
-      theme.axisLabelTextStyle,
-    );
-
-    center = Offset(size.width / 2, size.height / 2);
-
-    radius = max(
-      0,
-      // 축 라벨이 그려질 위치 고려
-      min(
-        size.width / 2 -
-            maxAxisLabelSize.width / 2 +
-            theme.verticeAndAxisLabelCenterGap,
-        size.height / 2 -
-            maxAxisLabelSize.height / 2 +
-            theme.verticeAndAxisLabelCenterGap,
-      ),
-    );
-  }
-
   void _drawAxisLine(Canvas canvas, PolygonGraphAxis axis) {
     final paint = Paint()
       ..color = theme.axisLineColor
@@ -114,7 +96,7 @@ final class PolygonGraphPainter extends CustomPainter {
         radius - theme.cornerRadius * (1 / cos(angle / 2) - 1 / sin(angle / 2));
 
     for (var i = 0; i < data.axes.length; i += 1) {
-      final offset = _getOffset(axisIndex: i, radius: axisLength);
+      final offset = layout.getOffset(axisIndex: i, radius: axisLength);
       canvas.drawLine(center, offset, paint);
     }
   }
@@ -134,7 +116,7 @@ final class PolygonGraphPainter extends CustomPainter {
 
       final vertices = data.axes.indexed
           .map(
-            (x) => _getOffset(
+            (x) => layout.getOffset(
               axisIndex: x.$1,
               radius: _mapValueToRadius(markingLine.value),
             ),
@@ -155,7 +137,7 @@ final class PolygonGraphPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     final vertices = data.axes.indexed
-        .map((x) => _getOffset(axisIndex: x.$1, radius: radius))
+        .map((x) => layout.getOffset(axisIndex: x.$1, radius: radius))
         .toList();
 
     canvas.drawPath(
@@ -215,7 +197,7 @@ final class PolygonGraphPainter extends CustomPainter {
       final value = x.$2;
 
       return value != null
-          ? _getOffset(axisIndex: x.$1, radius: _mapValueToRadius(value))
+          ? layout.getOffset(axisIndex: x.$1, radius: _mapValueToRadius(value))
           : null;
     }).toList();
 
@@ -264,15 +246,7 @@ final class PolygonGraphPainter extends CustomPainter {
       textDirection: textDirection,
     );
 
-    final textCenter = _getOffset(
-      axisIndex: axisIndex,
-      radius: radius + theme.verticeAndAxisLabelCenterGap,
-    );
-
-    final offset = Offset(
-      textCenter.dx - textSize.width / 2,
-      textCenter.dy - textSize.height / 2,
-    );
+    final offset = layout.getAxisLabelRect(axisIndex).topLeft;
 
     canvas.drawText(
       label,
@@ -338,17 +312,6 @@ final class PolygonGraphPainter extends CustomPainter {
     }
 
     return path..close();
-  }
-
-  Offset _getOffset({required int axisIndex, required double radius}) {
-    final index = axisIndex % data.axes.length;
-    final n = data.axes.length;
-    final theta = -(n.isEven ? pi / 2 - pi / n : pi / 2) + pi * 2 * index / n;
-
-    return Offset(
-      center.dx + radius * cos(theta),
-      center.dy + radius * sin(theta),
-    );
   }
 
   double _mapValueToRadius(num value) {
