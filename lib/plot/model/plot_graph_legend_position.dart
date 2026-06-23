@@ -1,0 +1,1 @@
+enum PlotGraphLegendPosition { bottomCenter, topRight }

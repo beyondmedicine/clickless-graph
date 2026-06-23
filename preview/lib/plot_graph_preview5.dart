@@ -1,20 +1,22 @@
 import 'package:clickless_graph/plot/model/plot_graph_axis.dart';
 import 'package:clickless_graph/plot/model/plot_graph_axis_marking.dart';
 import 'package:clickless_graph/plot/model/plot_graph_data.dart';
+import 'package:clickless_graph/plot/model/plot_graph_legend_position.dart';
+import 'package:clickless_graph/plot/model/plot_graph_line_type.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
-import 'package:clickless_graph/plot/model/plot_graph_trend_line.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_shape.dart';
 import 'package:clickless_graph/plot/model/plot_graph_type.dart';
-import 'package:clickless_graph/plot/widget/plot_graph.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
+import 'package:clickless_graph/plot/widget/plot_graph.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const PlotGraphPreview2App());
+  runApp(const PlotGraphPreview5App());
 }
 
-final class PlotGraphPreview2App extends StatelessWidget {
-  const PlotGraphPreview2App({super.key});
+final class PlotGraphPreview5App extends StatelessWidget {
+  const PlotGraphPreview5App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +40,10 @@ final class PlotGraphPreview2App extends StatelessWidget {
 
 const _red = Color(0xffff4545);
 const _yellow = Color(0xffffb800);
-const _blue = Color(0xff29a9ff);
-const _green = Color(0xFF16AD7E);
 
 const _sampleData = PlotGraphData(
+  title: '통증 및 스트레스 추이',
+  legendPosition: PlotGraphLegendPosition.bottomCenter,
   xAxis: PlotGraphAxis(
     min: 0,
     max: 6,
@@ -58,36 +60,43 @@ const _sampleData = PlotGraphData(
   ),
   leftYAxis: PlotGraphAxis(
     min: 0,
-    max: 12,
+    max: 10,
     markers: [
-      PlotGraphAxisMarking(value: 12, label: '12', showLine: true),
       PlotGraphAxisMarking(value: 10, label: '10', showLine: true),
-      PlotGraphAxisMarking(value: 8, label: '8', showLine: true),
-      PlotGraphAxisMarking(value: 6, label: '6', showLine: true),
-      PlotGraphAxisMarking(value: 4, label: '4', showLine: true),
-      PlotGraphAxisMarking(value: 2, label: '2', showLine: true),
+      PlotGraphAxisMarking(value: 5, label: '5', showLine: true),
       PlotGraphAxisMarking(value: 0, label: '0', showLine: true),
     ],
   ),
   groups: [
     PlotGraphPointGroup(
+      legend: '통증',
       type: PlotGraphType.line,
       points: [
-        PlotGraphPoint(x: 0, y: 12, color: _red, label: '12점'),
-        PlotGraphPoint(x: 1, y: 11, color: _red, label: '11점'),
-        PlotGraphPoint(x: 2, y: 7, color: _yellow, label: '7점'),
-        PlotGraphPoint(x: 3, y: 6, color: _yellow, label: '6점'),
-        PlotGraphPoint(x: 4, y: 5, color: _green, label: '5점'),
-        PlotGraphPoint(x: 5, y: 1, color: _blue, label: '1점'),
-        PlotGraphPoint(x: 6, y: 0, color: _blue, label: '0점'),
+        PlotGraphPoint(x: 0, y: 10, color: _red, label: '10점'),
+        PlotGraphPoint(x: 1, y: 9, color: _red, label: '9점'),
+        PlotGraphPoint(x: 2, y: 7, color: _red, label: '7점'),
+        PlotGraphPoint(x: 3, y: 6, color: _red, label: '6점'),
+        PlotGraphPoint(x: 4, y: 5, color: _red, label: '5점'),
+        PlotGraphPoint(x: 5, y: 3, color: _red, label: '3점'),
+        PlotGraphPoint(x: 6, y: 2, color: _red, label: '2점'),
       ],
-      zIndex: 3,
-      trendLines: [
-        PlotGraphTrendLine(
-          start: PlotGraphPoint(x: 0, y: 84, color: _red),
-          end: PlotGraphPoint(x: 6, y: 0, color: _blue),
-        ),
+      zIndex: 11,
+    ),
+    PlotGraphPointGroup(
+      legend: '스트레스',
+      type: PlotGraphType.line,
+      lineType: PlotGraphLineType.dashed,
+      pointShape: PlotGraphPointShape.triangle,
+      points: [
+        PlotGraphPoint(x: 0, y: 8, color: _yellow, label: '8점'),
+        PlotGraphPoint(x: 1, y: 7, color: _yellow, label: '7점'),
+        PlotGraphPoint(x: 2, y: 5, color: _yellow, label: '5점'),
+        PlotGraphPoint(x: 3, y: 4, color: _yellow, label: '4점'),
+        PlotGraphPoint(x: 4, y: 3, color: _yellow, label: '3점'),
+        PlotGraphPoint(x: 5, y: 1, color: _yellow, label: '1점'),
+        PlotGraphPoint(x: 6, y: 0, color: _yellow, label: '0점'),
       ],
+      zIndex: 12,
     ),
   ],
 );

@@ -57,9 +57,9 @@ const _sampleData = PlotGraphData(
     min: 0,
     max: 10,
     markers: [
-      PlotGraphAxisMarking(value: 10, label: '10'),
-      PlotGraphAxisMarking(value: 5, label: '5'),
-      PlotGraphAxisMarking(value: 0, label: '0'),
+      PlotGraphAxisMarking(value: 10, label: '10', showLine: true),
+      PlotGraphAxisMarking(value: 5, label: '5', showLine: true),
+      PlotGraphAxisMarking(value: 0, label: '0', showLine: true),
     ],
     label: '(점)',
   ),

@@ -12,6 +12,7 @@ final class PlotGraphTheme {
     this.markingLineWidth = 0.5,
     this.pointSize = 6,
     this.barWidth = 20,
+    this.titleLineAndTopOfGraphGap = 24,
     this.axisMarkingLabelAndVerticalAxisGap = 4,
     this.axisMarkingLabelAndHorizontalAxisGap = 5,
     this.verticalAxisLabelAndTopOfGraphGap = 16,
@@ -24,6 +25,7 @@ final class PlotGraphTheme {
     this.pointLabelTextStyle = defaultPointLabelTextStyle,
     this.indicatorLineLabelTextStyle = defaultIndicatorLineLabelTextStyle,
     this.legendTextStyle = defaultLegendTextStyle,
+    this.titleTextStyle = defaultTitleTextStyle,
   });
 
   final Color backgroundColor;
@@ -38,6 +40,7 @@ final class PlotGraphTheme {
   final double pointSize;
   final double barWidth;
 
+  final double titleLineAndTopOfGraphGap;
   final double axisMarkingLabelAndVerticalAxisGap;
   final double axisMarkingLabelAndHorizontalAxisGap;
   final double verticalAxisLabelAndTopOfGraphGap;
@@ -51,6 +54,7 @@ final class PlotGraphTheme {
   final TextStyle pointLabelTextStyle;
   final TextStyle indicatorLineLabelTextStyle;
   final TextStyle legendTextStyle;
+  final TextStyle titleTextStyle;
 
   static const TextStyle defaultAxisMarkingLabelTextStyle = TextStyle(
     color: Color(0xFF8D9BA8),
@@ -86,6 +90,13 @@ final class PlotGraphTheme {
     letterSpacing: -0.24,
     height: 1.4,
   );
+  static const TextStyle defaultTitleTextStyle = TextStyle(
+    color: Color(0xFF232C35),
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -0.48,
+    height: 1.4,
+  );
 
   PlotGraphTheme copyWith({
     Color? backgroundColor,
@@ -95,9 +106,10 @@ final class PlotGraphTheme {
     Color? indicatorLineColor,
     Color? trendLineColor,
     double? axisLineWidth,
-    double? gridLineWidth,
+    double? markingLineWidth,
     double? pointSize,
     double? barWidth,
+    double? titleLineAndTopOfGraphGap,
     double? axisMarkingLabelAndVerticalAxisGap,
     double? axisMarkingLabelAndHorizontalAxisGap,
     double? verticalAxisLabelAndTopOfGraphGap,
@@ -105,11 +117,12 @@ final class PlotGraphTheme {
     double? legendAndBottomOfGraphGap,
     double? legendItemsGap,
     double? legendPointAndLegendLabelGap,
-    TextStyle? axisMarkerLabelTextStyle,
+    TextStyle? axisMarkingLabelTextStyle,
     TextStyle? verticalAxisLabelTextStyle,
     TextStyle? pointLabelTextStyle,
     TextStyle? indicatorLineLabelTextStyle,
     TextStyle? legendTextStyle,
+    TextStyle? titleTextStyle,
   }) => PlotGraphTheme(
     backgroundColor: backgroundColor ?? this.backgroundColor,
     axisLineColor: axisLineColor ?? this.axisLineColor,
@@ -118,9 +131,11 @@ final class PlotGraphTheme {
     indicatorLineColor: indicatorLineColor ?? this.indicatorLineColor,
     trendLineColor: trendLineColor ?? this.trendLineColor,
     axisLineWidth: axisLineWidth ?? this.axisLineWidth,
-    markingLineWidth: gridLineWidth ?? this.markingLineWidth,
+    markingLineWidth: markingLineWidth ?? this.markingLineWidth,
     pointSize: pointSize ?? this.pointSize,
     barWidth: barWidth ?? this.barWidth,
+    titleLineAndTopOfGraphGap:
+        titleLineAndTopOfGraphGap ?? this.titleLineAndTopOfGraphGap,
     axisMarkingLabelAndVerticalAxisGap:
         axisMarkingLabelAndVerticalAxisGap ??
         this.axisMarkingLabelAndVerticalAxisGap,
@@ -137,13 +152,14 @@ final class PlotGraphTheme {
     legendPointAndLegendLabelGap:
         legendPointAndLegendLabelGap ?? this.legendPointAndLegendLabelGap,
     axisMarkingLabelTextStyle:
-        axisMarkerLabelTextStyle ?? this.axisMarkingLabelTextStyle,
+        axisMarkingLabelTextStyle ?? this.axisMarkingLabelTextStyle,
     verticalAxisLabelTextStyle:
         verticalAxisLabelTextStyle ?? this.verticalAxisLabelTextStyle,
     pointLabelTextStyle: pointLabelTextStyle ?? this.pointLabelTextStyle,
     indicatorLineLabelTextStyle:
         indicatorLineLabelTextStyle ?? this.indicatorLineLabelTextStyle,
     legendTextStyle: legendTextStyle ?? this.legendTextStyle,
+    titleTextStyle: titleTextStyle ?? this.titleTextStyle,
   );
 
   @override
@@ -160,6 +176,7 @@ final class PlotGraphTheme {
           markingLineWidth == other.markingLineWidth &&
           pointSize == other.pointSize &&
           barWidth == other.barWidth &&
+          titleLineAndTopOfGraphGap == other.titleLineAndTopOfGraphGap &&
           axisMarkingLabelAndVerticalAxisGap ==
               other.axisMarkingLabelAndVerticalAxisGap &&
           axisMarkingLabelAndHorizontalAxisGap ==
@@ -174,7 +191,8 @@ final class PlotGraphTheme {
           verticalAxisLabelTextStyle == other.verticalAxisLabelTextStyle &&
           pointLabelTextStyle == other.pointLabelTextStyle &&
           indicatorLineLabelTextStyle == other.indicatorLineLabelTextStyle &&
-          legendTextStyle == other.legendTextStyle;
+          legendTextStyle == other.legendTextStyle &&
+          titleTextStyle == other.titleTextStyle;
 
   @override
   int get hashCode => Object.hashAll([
@@ -188,6 +206,7 @@ final class PlotGraphTheme {
     markingLineWidth,
     pointSize,
     barWidth,
+    titleLineAndTopOfGraphGap,
     axisMarkingLabelAndVerticalAxisGap,
     axisMarkingLabelAndHorizontalAxisGap,
     verticalAxisLabelAndTopOfGraphGap,
@@ -200,5 +219,6 @@ final class PlotGraphTheme {
     pointLabelTextStyle,
     indicatorLineLabelTextStyle,
     legendTextStyle,
+    titleTextStyle,
   ]);
 }
