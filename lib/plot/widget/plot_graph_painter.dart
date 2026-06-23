@@ -5,7 +5,6 @@ import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_indicator_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_line_type.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
-import 'package:clickless_graph/plot/model/plot_graph_point_shape.dart';
 import 'package:clickless_graph/plot/model/plot_graph_trend_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_type.dart';
 import 'package:clickless_graph/plot/util/graph_axis_extension.dart';
