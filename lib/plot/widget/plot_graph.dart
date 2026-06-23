@@ -43,7 +43,11 @@ final class PlotGraph extends StatelessWidget {
                     data.legendPosition == PlotGraphLegendPosition.topRight)
                   Expanded(
                     flex: 1,
-                    child: _PlotGraphLegendView(data: data, theme: theme),
+                    child: _PlotGraphLegendView(
+                      data: data,
+                      theme: theme,
+                      alignment: WrapAlignment.end,
+                    ),
                   )
                 else
                   SizedBox.shrink(),
@@ -78,7 +82,11 @@ final class PlotGraph extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: _PlotGraphLegendView(data: data, theme: theme),
+                  child: _PlotGraphLegendView(
+                    data: data,
+                    theme: theme,
+                    alignment: WrapAlignment.center,
+                  ),
                 ),
               ],
             ),
@@ -89,15 +97,20 @@ final class PlotGraph extends StatelessWidget {
 }
 
 final class _PlotGraphLegendView extends StatelessWidget {
-  const _PlotGraphLegendView({required this.data, required this.theme});
+  const _PlotGraphLegendView({
+    required this.data,
+    required this.theme,
+    required this.alignment,
+  });
 
   final PlotGraphData data;
   final PlotGraphTheme theme;
+  final WrapAlignment alignment;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      alignment: WrapAlignment.center,
+      alignment: alignment,
       spacing: theme.legendItemsGap,
       children: data.groups
           .map((group) {
@@ -119,7 +132,9 @@ final class _PlotGraphLegendView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Flexible(child: Text(legend, style: theme.legendTextStyle)),
+                      Flexible(
+                        child: Text(legend, style: theme.legendTextStyle),
+                      ),
                     ],
                   );
           })

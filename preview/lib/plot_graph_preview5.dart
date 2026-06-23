@@ -43,7 +43,7 @@ const _yellow = Color(0xffffb800);
 
 const _sampleData = PlotGraphData(
   title: '통증 및 스트레스 추이',
-  legendPosition: PlotGraphLegendPosition.bottomCenter,
+  legendPosition: PlotGraphLegendPosition.topRight,
   xAxis: PlotGraphAxis(
     min: 0,
     max: 6,
