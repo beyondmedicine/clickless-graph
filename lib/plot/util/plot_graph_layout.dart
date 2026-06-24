@@ -127,7 +127,10 @@ final class PlotGraphLayout {
         x,
         y != null ? mapY(y, axis) : mapY(axis.min, axis) - 6,
       ),
-      PlotGraphType.line => y != null ? Offset(x, mapY(y, axis)) : null,
+      PlotGraphType.line => Offset(
+        x,
+        y != null ? mapY(y, axis) : mapY(axis.min, axis),
+      ),
     };
   }
 
