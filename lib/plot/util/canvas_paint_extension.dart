@@ -22,6 +22,15 @@ extension CanvasPaintExtension on Canvas {
           ..close();
 
         drawPath(path, paint);
+
+      case PlotGraphPointShape.square:
+        drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(center: center, width: size, height: size),
+            Radius.circular(size * 0.2),
+          ),
+          paint,
+        );
     }
   }
 }

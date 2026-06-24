@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 import 'package:clickless_graph/plot/model/plot_graph_axis_marking.dart';
-import 'package:clickless_graph/plot/model/plot_graph_tap_down_nearest_point_info.dart';
+import 'package:clickless_graph/plot/util/plot_graph_tap_down_nearest_point_info.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-final class PlotGraphTapDownInfo {
-  const PlotGraphTapDownInfo({
+final class PlotGraphPointerInfo {
+  const PlotGraphPointerInfo({
     required this.offset,
     required this.nearestXAxisMarking,
     required this.nearestXAxisMarkingXOffset,

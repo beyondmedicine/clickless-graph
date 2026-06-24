@@ -6,8 +6,9 @@ import 'package:clickless_graph/plot/model/plot_graph_axis_marking.dart';
 import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
-import 'package:clickless_graph/plot/model/plot_graph_tap_down_info.dart';
-import 'package:clickless_graph/plot/model/plot_graph_tap_down_nearest_point_info.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_label_type.dart';
+import 'package:clickless_graph/plot/util/plot_graph_pointer_info.dart';
+import 'package:clickless_graph/plot/util/plot_graph_tap_down_nearest_point_info.dart';
 import 'package:clickless_graph/plot/model/plot_graph_type.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
 import 'package:clickless_graph/plot/util/graph_axis_extension.dart';
@@ -134,7 +135,7 @@ final class PlotGraphLayout {
     };
   }
 
-  PlotGraphTapDownInfo getTapDownInfo(Offset offset) {
+  PlotGraphPointerInfo getTapDownInfo(Offset offset) {
     final nearestXAxisMarking = getNearestXAxisMarking(offset);
     final nearestLeftYAxisMarking = getNearestYAxisMarking(
       data.leftYAxis,
@@ -146,7 +147,7 @@ final class PlotGraphLayout {
         ? null
         : getNearestYAxisMarking(rightYAxis, offset);
 
-    return PlotGraphTapDownInfo(
+    return PlotGraphPointerInfo(
       offset: offset,
       nearestXAxisMarking: nearestXAxisMarking,
       nearestXAxisMarkingXOffset: nearestXAxisMarking == null
@@ -185,7 +186,7 @@ final class PlotGraphLayout {
   List<PlotGraphTapDownNearestPointInfo> getNearestPoints(Offset offset) {
     final candidates = <_NearestPointCandidate>[];
 
-    for (final group in sortedGroupsByZIndex) {
+    for (final group in data.groups) {
       _NearestPointCandidate? nearestInGroup;
 
       for (final point in group.points) {
@@ -291,8 +292,11 @@ final class PlotGraphLayout {
       data.hasPointLabel
           ? getMaxTextSize(
                   data.allPoints
-                      .map((point) => point.label)
-                      .whereType<String>(),
+                      .expand((point) => point.labels)
+                      .where(
+                        (label) => label.type == PlotGraphPointLabelType.point,
+                      )
+                      .map((label) => label.text),
                   theme.pointLabelTextStyle,
                 ).height +
                 theme.pointLabelAndPointGap
@@ -301,16 +305,16 @@ final class PlotGraphLayout {
     ].fold(0.0, (acc, value) => max(acc, value));
 
     final double bottomSpace = <double>[
-      (data.hasHorizontalAxisMarkingLabel
-              ? getMaxTextSize(
-                      data.xAxis.markers
-                          .map((marker) => marker.label)
-                          .whereType<String>(),
-                      theme.axisMarkingLabelTextStyle,
-                    ).height +
-                    theme.axisMarkingLabelAndHorizontalAxisGap
-              : 0) +
-          spaceDerivedFromVerticalAxisLabels,
+      data.hasHorizontalAxisMarkingLabel
+          ? getMaxTextSize(
+                  data.xAxis.markers
+                      .map((marker) => marker.label)
+                      .whereType<String>(),
+                  theme.axisMarkingLabelTextStyle,
+                ).height +
+                theme.axisMarkingLabelAndHorizontalAxisGap
+          : 0,
+      spaceDerivedFromVerticalAxisLabels,
     ].fold(0.0, (acc, value) => max(acc, value));
 
     return Rect.fromLTRB(

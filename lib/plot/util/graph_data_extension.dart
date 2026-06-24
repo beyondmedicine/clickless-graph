@@ -3,6 +3,7 @@ import 'package:clickless_graph/plot/model/plot_graph_axis_binding.dart';
 import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_indicator_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_label_type.dart';
 import 'package:clickless_graph/plot/util/graph_axis_extension.dart';
 
 extension GraphDataExtension on PlotGraphData {
@@ -29,5 +30,9 @@ extension GraphDataExtension on PlotGraphData {
 
   bool get hasHorizontalAxisMarkingLabel => xAxis.hasMarkingLabel;
 
-  bool get hasPointLabel => allPoints.any((point) => point.label != null);
+  bool get hasPointLabel => allPoints.any(
+    (point) => point.labels.any(
+      (label) => label.type == PlotGraphPointLabelType.point,
+    ),
+  );
 }

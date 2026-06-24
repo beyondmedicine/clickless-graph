@@ -10,6 +10,7 @@ import 'package:clickless_graph/plot/util/graph_data_extension.dart';
 import 'package:clickless_graph/common/util/get_text_size.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
 import 'package:clickless_graph/plot/util/canvas_paint_extension.dart';
+import 'package:clickless_graph/plot/util/graph_data_point_extension.dart';
 import 'package:clickless_graph/plot/util/plot_graph_layout.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,7 @@ final class PlotGraphPainter extends CustomPainter {
       theme: theme,
       textDirection: textDirection,
     );
-    
+
     final plotArea = layout.plotArea;
 
     // 축 라벨 그리기
@@ -264,7 +265,7 @@ final class PlotGraphPainter extends CustomPainter {
     final groupOffset = layout.getBarGroupOffset(group);
 
     for (final point in group.points) {
-      final label = point.label;
+      final label = point.pointLabel;
       final value = point.y;
 
       final x = layout.mapX(point.x) + groupOffset;
@@ -348,7 +349,7 @@ final class PlotGraphPainter extends CustomPainter {
     }
 
     for (final point in points) {
-      final label = point.label;
+      final label = point.pointLabel;
       final y = point.y;
 
       if (y == null) {
