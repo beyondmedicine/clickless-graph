@@ -4,7 +4,7 @@ import 'package:clickless_graph/polygon/model/polygon_graph_point_group.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-final class PolygonGraphData {
+final class PolygonGraphData<T> {
   const PolygonGraphData({
     required this.min,
     required this.max,
@@ -15,7 +15,7 @@ final class PolygonGraphData {
 
   final num min;
   final num max;
-  final List<PolygonGraphAxis> axes;
+  final List<PolygonGraphAxis<T>> axes;
   final List<PolygonGraphPointGroup> pointGroups;
   final List<PolygonGraphMarkingLine> markingLines;
 }

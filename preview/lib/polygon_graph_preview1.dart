@@ -21,7 +21,13 @@ final class PolygonGraphPreview1App extends StatelessWidget {
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: PolygonGraph(data: _sampleData),
+            child: PolygonGraph(
+              data: _sampleData,
+              onAxisLabelTapDown: (details, axis, offset) =>
+                  debugPrint('tap down: ${offset.toString()}, ${axis.info}'),
+              onAxisLabelTapUp: (details) => debugPrint('tap up'),
+              onAxisLabelTapCancel: () => debugPrint('tap cancel'),
+            ),
           ),
         ),
       ),
@@ -36,12 +42,12 @@ const _sampleData = PolygonGraphData(
   min: 0,
   max: 10,
   axes: [
-    PolygonGraphAxis(label: '관자놀이'),
-    PolygonGraphAxis(label: '관절강'),
-    PolygonGraphAxis(label: '목 근육'),
-    PolygonGraphAxis(label: '저작근 하부'),
-    PolygonGraphAxis(label: '저작근 중심'),
-    PolygonGraphAxis(label: '이마 근육'),
+    PolygonGraphAxis(label: '관자놀이', info: 1),
+    PolygonGraphAxis(label: '관절강', info: 2),
+    PolygonGraphAxis(label: '목 근육', info: 3),
+    PolygonGraphAxis(label: '저작근 하부', info: 4),
+    PolygonGraphAxis(label: '저작근 중심', info: 5),
+    PolygonGraphAxis(label: '이마 근육', info: 6),
   ],
   markingLines: [
     PolygonGraphMarkingLine(value: 0, label: '0', showLine: false),

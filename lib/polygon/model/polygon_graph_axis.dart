@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
 @immutable
-final class PolygonGraphAxis {
-  const PolygonGraphAxis({required this.label, this.clickOverlayBuilder});
+final class PolygonGraphAxis<T> {
+  const PolygonGraphAxis({required this.label, required this.info});
 
   final String label;
-  final WidgetBuilder? clickOverlayBuilder;
+  final T info;
 }
