@@ -32,6 +32,10 @@ final class PlotGraphPreview1App extends StatelessWidget {
             child: PlotGraph(
               data: _sampleData,
               theme: PlotGraphTheme().copyWith(backgroundColor: Colors.white),
+              onHover: (event, info) => log(
+                "hover\noffset: ${info.offset}\nx-axis offset: ${info.nearestXAxisMarkingXOffset}(${info.nearestXAxisMarking?.label})\ny-axis-left offset: ${info.nearestLeftYAxisMarkingYOffset}(${info.nearestLeftYAxisMarking?.label})\ny-axis-right offset: ${info.nearestRightYAxisMarkingYOffset}(${info.nearestRightYAxisMarking?.value})\nnearest points: ${info.nearestPoints.map((point) => "${point.group.legend}-(${point.point.x},${point.point.y})").join(", ")}",
+              ),
+              onHoverExit: (event) => debugPrint("hovver exit"),
               onTapDown: (details, info) => log(
                 "tap down\noffset: ${info.offset}\nx-axis offset: ${info.nearestXAxisMarkingXOffset}(${info.nearestXAxisMarking?.label})\ny-axis-left offset: ${info.nearestLeftYAxisMarkingYOffset}(${info.nearestLeftYAxisMarking?.label})\ny-axis-right offset: ${info.nearestRightYAxisMarkingYOffset}(${info.nearestRightYAxisMarking?.value})\nnearest points: ${info.nearestPoints.map((point) => "${point.group.legend}-(${point.point.x},${point.point.y})").join(", ")}",
               ),

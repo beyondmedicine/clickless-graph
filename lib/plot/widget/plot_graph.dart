@@ -6,6 +6,7 @@ import 'package:clickless_graph/plot/util/plot_graph_layout.dart';
 import 'package:clickless_graph/plot/widget/plot_graph_painter.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
 import 'package:clickless_graph/plot/widget/plot_graph_point_painter.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 final class PlotGraph extends StatelessWidget {
@@ -16,6 +17,8 @@ final class PlotGraph extends StatelessWidget {
     this.onTapDown,
     this.onTapUp,
     this.onTapCancel,
+    this.onHover,
+    this.onHoverExit,
   });
 
   final PlotGraphData data;
@@ -26,6 +29,11 @@ final class PlotGraph extends StatelessWidget {
 
   final void Function(TapUpDetails details)? onTapUp;
   final VoidCallback? onTapCancel;
+
+  final void Function(PointerHoverEvent event, PlotGraphTapDownInfo info)?
+  onHover;
+  
+  final void Function(PointerExitEvent event)? onHoverExit;
 
   @override
   Widget build(BuildContext context) {
@@ -94,18 +102,29 @@ final class PlotGraph extends StatelessWidget {
                     ),
                     if (onTapDown != null ||
                         onTapUp != null ||
-                        onTapCancel != null)
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTapDown: onTapDown == null
+                        onTapCancel != null ||
+                        onHover != null ||
+                        onHoverExit != null)
+                      MouseRegion(
+                        onHover: onHover == null
                             ? null
-                            : (details) => onTapDown?.call(
-                                details,
-                                layout.getTapDownInfo(details.localPosition),
+                            : (event) => onHover?.call(
+                                event,
+                                layout.getTapDownInfo(event.localPosition),
                               ),
-                        onTapUp: onTapUp,
-                        onTapCancel: onTapCancel,
-                        child: const SizedBox.expand(),
+                        onExit: onHoverExit,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTapDown: onTapDown == null
+                              ? null
+                              : (details) => onTapDown?.call(
+                                  details,
+                                  layout.getTapDownInfo(details.localPosition),
+                                ),
+                          onTapUp: onTapUp,
+                          onTapCancel: onTapCancel,
+                          child: const SizedBox.expand(),
+                        ),
                       ),
                   ],
                 ),
