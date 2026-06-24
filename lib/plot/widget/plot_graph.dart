@@ -1,10 +1,11 @@
 import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_legend_position.dart';
-import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
-import 'package:clickless_graph/plot/util/canvas_paint_extension.dart';
+import 'package:clickless_graph/plot/model/plot_graph_tap_down_info.dart';
 import 'package:clickless_graph/plot/util/graph_data_extension.dart';
+import 'package:clickless_graph/plot/util/plot_graph_layout.dart';
 import 'package:clickless_graph/plot/widget/plot_graph_painter.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
+import 'package:clickless_graph/plot/widget/plot_graph_point_painter.dart';
 import 'package:flutter/material.dart';
 
 final class PlotGraph extends StatelessWidget {
@@ -12,10 +13,19 @@ final class PlotGraph extends StatelessWidget {
     super.key,
     required this.data,
     this.theme = const PlotGraphTheme(),
+    this.onTapDown,
+    this.onTapUp,
+    this.onTapCancel,
   });
 
   final PlotGraphData data;
   final PlotGraphTheme theme;
+
+  final void Function(TapDownDetails details, PlotGraphTapDownInfo info)?
+  onTapDown;
+
+  final void Function(TapUpDetails details)? onTapUp;
+  final VoidCallback? onTapCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -57,18 +67,47 @@ final class PlotGraph extends StatelessWidget {
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
+              final textDirection =
+                  Directionality.maybeOf(context) ?? TextDirection.ltr;
+              final size = Size(constraints.maxWidth, constraints.maxHeight);
+              final layout = PlotGraphLayout(
+                size: size,
+                data: data,
+                theme: theme,
+                textDirection: textDirection,
+              );
+
               return SizedBox(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight,
-                child: RepaintBoundary(
-                  child: CustomPaint(
-                    painter: PlotGraphPainter(
-                      data: data,
-                      theme: theme,
-                      textDirection:
-                          Directionality.maybeOf(context) ?? TextDirection.ltr,
+                width: size.width,
+                height: size.height,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    RepaintBoundary(
+                      child: CustomPaint(
+                        painter: PlotGraphPainter(
+                          data: data,
+                          theme: theme,
+                          textDirection: textDirection,
+                        ),
+                      ),
                     ),
-                  ),
+                    if (onTapDown != null ||
+                        onTapUp != null ||
+                        onTapCancel != null)
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTapDown: onTapDown == null
+                            ? null
+                            : (details) => onTapDown?.call(
+                                details,
+                                layout.getTapDownInfo(details.localPosition),
+                              ),
+                        onTapUp: onTapUp,
+                        onTapCancel: onTapCancel,
+                        child: const SizedBox.expand(),
+                      ),
+                  ],
                 ),
               );
             },
@@ -126,7 +165,7 @@ final class _PlotGraphLegendView extends StatelessWidget {
                         width: theme.pointSize,
                         height: theme.pointSize,
                         child: CustomPaint(
-                          painter: _PlotGraphLegendViewPointPainter(
+                          painter: PlotGraphPointPainter(
                             pointGroup: group,
                             theme: theme,
                           ),
@@ -141,45 +180,5 @@ final class _PlotGraphLegendView extends StatelessWidget {
           .whereType<Widget>()
           .toList(),
     );
-  }
-}
-
-final class _PlotGraphLegendViewPointPainter extends CustomPainter {
-  _PlotGraphLegendViewPointPainter({
-    required this.pointGroup,
-    required this.theme,
-  });
-
-  final PlotGraphPointGroup pointGroup;
-  final PlotGraphTheme theme;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final color = _legendColor(pointGroup);
-    final size = theme.pointSize;
-
-    canvas.drawPoint(
-      center: Offset(size / 2, size / 2),
-      size: size,
-      color: color,
-      shape: pointGroup.pointShape,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) =>
-      oldDelegate is! _PlotGraphLegendViewPointPainter ||
-      pointGroup != oldDelegate.pointGroup;
-
-  Color _legendColor(PlotGraphPointGroup group) {
-    for (final point in group.points) {
-      if (point.y != null) {
-        return point.color;
-      }
-    }
-
-    return group.points.isEmpty
-        ? theme.disabledColor
-        : group.points.first.color;
   }
 }

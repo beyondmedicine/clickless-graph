@@ -30,6 +30,11 @@ final class PlotGraphPreview1App extends StatelessWidget {
             child: PlotGraph(
               data: _sampleData,
               theme: PlotGraphTheme().copyWith(backgroundColor: Colors.white),
+              onTapDown: (details, info) => debugPrint(
+                "tap down: ${info.offset}, ${info.nearestPoints.map((point) => "${point.group.legend}-(${point.point.x},${point.point.y})").join(", ")}",
+              ),
+              onTapUp: (details) => debugPrint("tap up"),
+              onTapCancel: () => debugPrint("tap cancel"),
             ),
           ),
         ),
