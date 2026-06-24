@@ -5,7 +5,7 @@ import 'package:clickless_graph/polygon/util/polygon_graph_layout.dart';
 import 'package:clickless_graph/polygon/widget/polygon_graph_painter.dart';
 import 'package:flutter/material.dart';
 
-final class PolygonGraph extends StatelessWidget {
+final class PolygonGraph<T> extends StatelessWidget {
   const PolygonGraph({
     super.key,
     required this.data,
@@ -16,13 +16,13 @@ final class PolygonGraph extends StatelessWidget {
     this.onAxisLabelTapCancel,
   });
 
-  final PolygonGraphData data;
+  final PolygonGraphData<T> data;
   final PolygonGraphTheme theme;
   final EdgeInsets axisLabelTouchPadding;
 
   final void Function(
     TapDownDetails details,
-    PolygonGraphAxis axis,
+    PolygonGraphAxis<T> axis,
     Offset offset,
   )?
   onAxisLabelTapDown;
@@ -83,7 +83,7 @@ final class PolygonGraph extends StatelessWidget {
   }
 }
 
-final class _AxisLabelTouchArea extends StatelessWidget {
+final class _AxisLabelTouchArea<T> extends StatelessWidget {
   const _AxisLabelTouchArea({
     required this.axis,
     required this.axisIndex,
@@ -94,14 +94,14 @@ final class _AxisLabelTouchArea extends StatelessWidget {
     required this.onTapCancel,
   });
 
-  final PolygonGraphAxis axis;
+  final PolygonGraphAxis<T> axis;
   final int axisIndex;
   final PolygonGraphLayout layout;
   final EdgeInsets padding;
 
   final void Function(
     TapDownDetails details,
-    PolygonGraphAxis axis,
+    PolygonGraphAxis<T> axis,
     Offset offset,
   )?
   onTapDown;
