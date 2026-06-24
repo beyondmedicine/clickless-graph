@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:clickless_graph/plot/model/plot_graph_axis.dart';
 import 'package:clickless_graph/plot/model/plot_graph_axis_binding.dart';
 import 'package:clickless_graph/plot/model/plot_graph_axis_marking.dart';
@@ -30,8 +32,8 @@ final class PlotGraphPreview1App extends StatelessWidget {
             child: PlotGraph(
               data: _sampleData,
               theme: PlotGraphTheme().copyWith(backgroundColor: Colors.white),
-              onTapDown: (details, info) => debugPrint(
-                "tap down: ${info.offset}, x-axis: ${info.nearestXAxisMarking?.value}, y-axis-left: ${info.nearestLeftYAxisMarking?.label}, y-axis-right: ${info.nearestRightYAxisMarking?.value} ${info.nearestPoints.map((point) => "${point.group.legend}-(${point.point.x},${point.point.y})").join(", ")}",
+              onTapDown: (details, info) => log(
+                "tap down\noffset: ${info.offset}\nx-axis offset: ${info.nearestXAxisMarkingXOffset}(${info.nearestXAxisMarking?.label})\ny-axis-left offset: ${info.nearestLeftYAxisMarkingYOffset}(${info.nearestLeftYAxisMarking?.label})\ny-axis-right offset: ${info.nearestRightYAxisMarkingYOffset}(${info.nearestRightYAxisMarking?.value})\nnearest points: ${info.nearestPoints.map((point) => "${point.group.legend}-(${point.point.x},${point.point.y})").join(", ")}",
               ),
               onTapUp: (details) => debugPrint("tap up"),
               onTapCancel: () => debugPrint("tap cancel"),
