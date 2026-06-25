@@ -37,6 +37,7 @@ final class PlotGraph extends StatefulWidget {
 
 final class _PlotGraphState extends State<PlotGraph> {
   PlotGraphPointerInfo? _tapDownInfo;
+  List<PlotGraphBubbleOverlayItem>? _bubbleOverlayItems;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,7 @@ final class _PlotGraphState extends State<PlotGraph> {
     final theme = widget.theme;
     final title = data.title;
     final tapDownInfo = _tapDownInfo;
+    final bubbleOverlayItems = _bubbleOverlayItems;
 
     return Stack(
       fit: StackFit.expand,
@@ -157,11 +159,12 @@ final class _PlotGraphState extends State<PlotGraph> {
               ),
           ],
         ),
-        if (tapDownInfo != null && tapDownInfo.nearestPoints.isNotEmpty)
+        if (tapDownInfo != null && bubbleOverlayItems != null)
           IgnorePointer(
             child: _PlotGraphBubbleOverlayPositioner(
               info: tapDownInfo,
               theme: widget.bubbleOverlayTheme,
+              items: bubbleOverlayItems,
             ),
           ),
       ],
@@ -170,9 +173,14 @@ final class _PlotGraphState extends State<PlotGraph> {
 
   void _showBubbleOverlay(PointerEvent event, PlotGraphLayout layout) {
     final newTapDownInfo = layout.getTapDownInfo(event.localPosition);
+    final newBubbleOverlayItems = _getBubbleOverlayItems(newTapDownInfo);
 
-    if (_tapDownInfo?.nearestXAxisMarkingXOffset !=
-        newTapDownInfo.nearestXAxisMarkingXOffset) {
+    final isHapticable =
+        newBubbleOverlayItems != null &&
+        _tapDownInfo?.nearestXAxisMarkingXOffset !=
+            newTapDownInfo.nearestXAxisMarkingXOffset;
+
+    if (isHapticable) {
       switch (widget.bubbleOverlayHapticFeedback) {
         case PlotGraphBubbleOverlayHapticFeedback.light:
           HapticFeedback.lightImpact();
@@ -184,10 +192,37 @@ final class _PlotGraphState extends State<PlotGraph> {
       }
     }
 
-    setState(() => _tapDownInfo = newTapDownInfo);
+    setState(() {
+      _tapDownInfo = newTapDownInfo;
+      _bubbleOverlayItems = newBubbleOverlayItems;
+    });
   }
 
-  void _hideBubbleOverlay() => setState(() => _tapDownInfo = null);
+  void _hideBubbleOverlay() {
+    setState(() {
+      _tapDownInfo = null;
+      _bubbleOverlayItems = null;
+    });
+  }
+
+  List<PlotGraphBubbleOverlayItem>? _getBubbleOverlayItems(
+    PlotGraphPointerInfo info,
+  ) => info.nearestPoints
+      .map((point) {
+        final overlayLabel = point.point.overlayLabel;
+
+        return overlayLabel != null &&
+                point.point.x == info.nearestXAxisMarking?.value
+            ? PlotGraphBubbleOverlayItem(
+                markerShape: point.group.pointShape,
+                markerColor: point.point.color,
+                legend: point.group.legend,
+                data: overlayLabel,
+              )
+            : null;
+      })
+      .whereType<PlotGraphBubbleOverlayItem>()
+      .toList();
 }
 
 final class _PlotGraphLegendView extends StatelessWidget {
@@ -242,10 +277,12 @@ final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
   const _PlotGraphBubbleOverlayPositioner({
     required this.info,
     required this.theme,
+    required this.items,
   });
 
   final PlotGraphPointerInfo info;
   final PlotGraphBubbleOverlayTheme theme;
+  final List<PlotGraphBubbleOverlayItem> items;
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +290,6 @@ final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
       builder: (context, constraints) {
         final anchor = _getAnchorOffset();
         final tailPosition = _getTailPosition(anchor, constraints.biggest);
-        final items = _getItems();
 
         return CustomSingleChildLayout(
           delegate: _PlotGraphBubbleOverlayLayoutDelegate(
@@ -261,13 +297,11 @@ final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
             tailPosition: tailPosition,
             theme: theme,
           ),
-          child: items.isNotEmpty
-              ? PlotGraphBubbleOverlay(
-                  items: items,
-                  tailPoisition: tailPosition,
-                  theme: theme,
-                )
-              : null,
+          child: PlotGraphBubbleOverlay(
+            items: items,
+            tailPoisition: tailPosition,
+            theme: theme,
+          ),
         );
       },
     );
@@ -290,23 +324,6 @@ final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
         ? PlotGraphBubbleOverlayTailPosition.bottomRight
         : PlotGraphBubbleOverlayTailPosition.bottomCenter;
   }
-
-  List<PlotGraphBubbleOverlayItem> _getItems() => info.nearestPoints
-      .map((point) {
-        final overlayLabel = point.point.overlayLabel;
-
-        return overlayLabel != null &&
-                point.point.x == info.nearestXAxisMarking?.value
-            ? PlotGraphBubbleOverlayItem(
-                markerShape: point.group.pointShape,
-                markerColor: point.point.color,
-                legend: point.group.legend,
-                data: overlayLabel,
-              )
-            : null;
-      })
-      .whereType<PlotGraphBubbleOverlayItem>()
-      .toList();
 }
 
 final class _PlotGraphBubbleOverlayLayoutDelegate
