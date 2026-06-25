@@ -1,3 +1,4 @@
+import 'package:clickless_graph/plot/model/plot_graph_bubble_overlay_haptic_feedback.dart';
 import 'package:clickless_graph/plot/model/plot_graph_bubble_overlay_item.dart';
 import 'package:clickless_graph/plot/model/plot_graph_bubble_overlay_tail_position.dart';
 import 'package:clickless_graph/plot/model/plot_graph_data.dart';
@@ -12,6 +13,7 @@ import 'package:clickless_graph/plot/widget/plot_graph_painter.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
 import 'package:clickless_graph/plot/widget/plot_graph_point_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 final class PlotGraph extends StatefulWidget {
   const PlotGraph({
@@ -20,12 +22,14 @@ final class PlotGraph extends StatefulWidget {
     this.theme = const PlotGraphTheme(),
     this.bubbleOverlayTheme = const PlotGraphBubbleOverlayTheme(),
     this.showBubbleOverlay = false,
+    this.bubbleOverlayHapticFeedback,
   });
 
   final PlotGraphData data;
   final PlotGraphTheme theme;
   final PlotGraphBubbleOverlayTheme bubbleOverlayTheme;
   final bool showBubbleOverlay;
+  final PlotGraphBubbleOverlayHapticFeedback? bubbleOverlayHapticFeedback;
 
   @override
   State<PlotGraph> createState() => _PlotGraphState();
@@ -164,8 +168,24 @@ final class _PlotGraphState extends State<PlotGraph> {
     );
   }
 
-  void _showBubbleOverlay(PointerEvent event, PlotGraphLayout layout) =>
-      setState(() => _tapDownInfo = layout.getTapDownInfo(event.localPosition));
+  void _showBubbleOverlay(PointerEvent event, PlotGraphLayout layout) {
+    final newTapDownInfo = layout.getTapDownInfo(event.localPosition);
+
+    if (_tapDownInfo?.nearestXAxisMarkingXOffset !=
+        newTapDownInfo.nearestXAxisMarkingXOffset) {
+      switch (widget.bubbleOverlayHapticFeedback) {
+        case PlotGraphBubbleOverlayHapticFeedback.light:
+          HapticFeedback.lightImpact();
+        case PlotGraphBubbleOverlayHapticFeedback.medium:
+          HapticFeedback.mediumImpact();
+        case PlotGraphBubbleOverlayHapticFeedback.heavy:
+          HapticFeedback.heavyImpact();
+        case null: // do nothing
+      }
+    }
+
+    setState(() => _tapDownInfo = newTapDownInfo);
+  }
 
   void _hideBubbleOverlay() => setState(() => _tapDownInfo = null);
 }
