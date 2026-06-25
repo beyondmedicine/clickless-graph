@@ -197,10 +197,9 @@ final class _PlotGraphState extends State<PlotGraph> {
 
     setState(() {
       _tapDownInfo = newTapDownInfo;
-
-      if (isNewBubbleOverlayItemsNotEmpty) {
-        _bubbleOverlayItems = newBubbleOverlayItems;
-      }
+      _bubbleOverlayItems = isNewBubbleOverlayItemsNotEmpty
+          ? newBubbleOverlayItems
+          : null;
     });
   }
 
