@@ -223,23 +223,45 @@ final class _PlotGraphBubbleBackgroundPainter extends CustomPainter {
     required double tailCenterX,
     required double tailHalfWidth,
   }) {
-    final curveControlY = baseY + (tipY - baseY) * 0.35;
-    final curveDistance = tailHalfWidth * 0.55;
+    final tailRadius = 3.0;
+    final tailHeight = (tipY - baseY).abs();
+    final leftBase = Offset(tailCenterX - tailHalfWidth, baseY);
+    final rightBase = Offset(tailCenterX + tailHalfWidth, baseY);
+    final tip = Offset(tailCenterX, tipY);
+
+    if (tailRadius <= 0 || tailHalfWidth <= 0 || tailHeight <= 0) {
+      path
+        ..moveTo(leftBase.dx, leftBase.dy)
+        ..lineTo(tip.dx, tip.dy)
+        ..lineTo(rightBase.dx, rightBase.dy)
+        ..close();
+      return;
+    }
+
+    final sideLength = Offset(tailHalfWidth, tailHeight).distance;
+    final tangentDistance = (tailRadius * tailHeight / tailHalfWidth)
+        .clamp(0.0, sideLength)
+        .toDouble();
+    final tangentRatio = tangentDistance / sideLength;
+    final yDirection = tipY > baseY ? 1.0 : -1.0;
+    final leftArcStart = Offset(
+      tailCenterX - tailHalfWidth * tangentRatio,
+      tipY - yDirection * tailHeight * tangentRatio,
+    );
+    final rightArcEnd = Offset(
+      tailCenterX + tailHalfWidth * tangentRatio,
+      tipY - yDirection * tailHeight * tangentRatio,
+    );
 
     path
-      ..moveTo(tailCenterX - tailHalfWidth, baseY)
-      ..quadraticBezierTo(
-        tailCenterX - curveDistance,
-        curveControlY,
-        tailCenterX,
-        tipY,
+      ..moveTo(leftBase.dx, leftBase.dy)
+      ..lineTo(leftArcStart.dx, leftArcStart.dy)
+      ..arcToPoint(
+        rightArcEnd,
+        radius: Radius.circular(tailRadius),
+        clockwise: tipY < baseY,
       )
-      ..quadraticBezierTo(
-        tailCenterX + curveDistance,
-        curveControlY,
-        tailCenterX + tailHalfWidth,
-        baseY,
-      )
+      ..lineTo(rightBase.dx, rightBase.dy)
       ..close();
   }
 
