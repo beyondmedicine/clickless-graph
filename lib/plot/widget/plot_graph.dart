@@ -175,8 +175,11 @@ final class _PlotGraphState extends State<PlotGraph> {
     final newTapDownInfo = layout.getTapDownInfo(event.localPosition);
     final newBubbleOverlayItems = _getBubbleOverlayItems(newTapDownInfo);
 
+    final isNewBubbleOverlayItemsNotEmpty =
+        newBubbleOverlayItems != null && newBubbleOverlayItems.isNotEmpty;
+
     final isHapticable =
-        newBubbleOverlayItems != null &&
+        isNewBubbleOverlayItemsNotEmpty &&
         _tapDownInfo?.nearestXAxisMarkingXOffset !=
             newTapDownInfo.nearestXAxisMarkingXOffset;
 
@@ -194,7 +197,10 @@ final class _PlotGraphState extends State<PlotGraph> {
 
     setState(() {
       _tapDownInfo = newTapDownInfo;
-      _bubbleOverlayItems = newBubbleOverlayItems;
+
+      if (isNewBubbleOverlayItemsNotEmpty) {
+        _bubbleOverlayItems = newBubbleOverlayItems;
+      }
     });
   }
 
