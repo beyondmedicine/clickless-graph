@@ -233,6 +233,7 @@ final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
       builder: (context, constraints) {
         final anchor = _getAnchorOffset();
         final tailPosition = _getTailPosition(anchor, constraints.biggest);
+        final items = _getItems();
 
         return CustomSingleChildLayout(
           delegate: _PlotGraphBubbleOverlayLayoutDelegate(
@@ -240,26 +241,13 @@ final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
             tailPosition: tailPosition,
             theme: theme,
           ),
-          child: PlotGraphBubbleOverlay(
-            items: info.nearestPoints
-                .map((point) {
-                  final overlayLabel = point.point.overlayLabel;
-
-                  return overlayLabel != null &&
-                          point.point.x == info.nearestXAxisMarking?.value
-                      ? PlotGraphBubbleOverlayItem(
-                          markerShape: point.group.pointShape,
-                          markerColor: point.point.color,
-                          legend: point.group.legend,
-                          data: overlayLabel,
-                        )
-                      : null;
-                })
-                .whereType<PlotGraphBubbleOverlayItem>()
-                .toList(),
-            tailPoisition: tailPosition,
-            theme: theme,
-          ),
+          child: items.isNotEmpty
+              ? PlotGraphBubbleOverlay(
+                  items: items,
+                  tailPoisition: tailPosition,
+                  theme: theme,
+                )
+              : null,
         );
       },
     );
@@ -282,6 +270,23 @@ final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
         ? PlotGraphBubbleOverlayTailPosition.bottomRight
         : PlotGraphBubbleOverlayTailPosition.bottomCenter;
   }
+
+  List<PlotGraphBubbleOverlayItem> _getItems() => info.nearestPoints
+      .map((point) {
+        final overlayLabel = point.point.overlayLabel;
+
+        return overlayLabel != null &&
+                point.point.x == info.nearestXAxisMarking?.value
+            ? PlotGraphBubbleOverlayItem(
+                markerShape: point.group.pointShape,
+                markerColor: point.point.color,
+                legend: point.group.legend,
+                data: overlayLabel,
+              )
+            : null;
+      })
+      .whereType<PlotGraphBubbleOverlayItem>()
+      .toList();
 }
 
 final class _PlotGraphBubbleOverlayLayoutDelegate
