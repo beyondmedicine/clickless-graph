@@ -245,7 +245,8 @@ final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
                 .map((point) {
                   final overlayLabel = point.point.overlayLabel;
 
-                  return overlayLabel != null
+                  return overlayLabel != null &&
+                          point.point.x == info.nearestXAxisMarking?.value
                       ? PlotGraphBubbleOverlayItem(
                           markerShape: point.group.pointShape,
                           markerColor: point.point.color,
@@ -257,6 +258,7 @@ final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
                 .whereType<PlotGraphBubbleOverlayItem>()
                 .toList(),
             tailPoisition: tailPosition,
+            theme: theme,
           ),
         );
       },
