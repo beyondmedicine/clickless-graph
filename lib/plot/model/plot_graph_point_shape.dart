@@ -1,1 +1,1 @@
-enum PlotGraphPointShape { circle, triangle }
+enum PlotGraphPointShape { circle, triangle, square }

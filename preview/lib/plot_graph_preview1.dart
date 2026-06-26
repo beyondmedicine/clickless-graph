@@ -5,10 +5,12 @@ import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_line_type.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_label.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_label_type.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_shape.dart';
 import 'package:clickless_graph/plot/model/plot_graph_type.dart';
-import 'package:clickless_graph/plot/widget/plot_graph.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
+import 'package:clickless_graph/plot/widget/plot_graph.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -27,13 +29,23 @@ final class PlotGraphPreview1App extends StatelessWidget {
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: PlotGraph(
-              data: _sampleData,
-              theme: PlotGraphTheme().copyWith(backgroundColor: Colors.white),
-            ),
+            child: const _PlotGraphPreview1(),
           ),
         ),
       ),
+    );
+  }
+}
+
+final class _PlotGraphPreview1 extends StatelessWidget {
+  const _PlotGraphPreview1();
+
+  @override
+  Widget build(BuildContext context) {
+    return PlotGraph(
+      data: _sampleData,
+      theme: const PlotGraphTheme().copyWith(backgroundColor: Colors.white),
+      showBubbleOverlay: true,
     );
   }
 }
@@ -78,15 +90,84 @@ const _sampleData = PlotGraphData(
       legend: '통증',
       type: PlotGraphType.line,
       points: [
-        PlotGraphPoint(x: 1, y: 10, color: Color(0xffff4545)),
-        PlotGraphPoint(x: 2, y: 9, color: Color(0xffff4545)),
-        PlotGraphPoint(x: 3, y: 7, color: Color(0xffff4545)),
+        PlotGraphPoint(
+          x: 1,
+          y: 10,
+          color: Color(0xffff4545),
+          labels: [
+            PlotGraphPointLabel(
+              text: '10점',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 2,
+          y: 9,
+          color: Color(0xffff4545),
+          labels: [
+            PlotGraphPointLabel(
+              text: '9잠',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 3,
+          y: 7,
+          color: Color(0xffff4545),
+          labels: [
+            PlotGraphPointLabel(
+              text: '7점',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 4,
+          y: null,
+          color: Color(0xffff4545),
+          labels: [
+            PlotGraphPointLabel(
+              text: '기록 없음',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 5,
+          y: null,
+          color: Color(0xffff4545),
+          labels: [
+            PlotGraphPointLabel(
+              text: '기록 없음',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 6,
+          y: null,
+          color: Color(0xffff4545),
+          labels: [
+            PlotGraphPointLabel(
+              text: '기록 없음',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 7,
+          y: 2,
+          color: Color(0xffff4545),
+          labels: [
+            PlotGraphPointLabel(
+              text: '2점',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
       ],
-      zIndex: 11,
-    ),
-    PlotGraphPointGroup(
-      type: PlotGraphType.line,
-      points: [PlotGraphPoint(x: 7, y: 2, color: Color(0xffff4545))],
       zIndex: 11,
     ),
     PlotGraphPointGroup(
@@ -95,17 +176,84 @@ const _sampleData = PlotGraphData(
       lineType: PlotGraphLineType.dashed,
       pointShape: PlotGraphPointShape.triangle,
       points: [
-        PlotGraphPoint(x: 1, y: 9, color: Color(0xffffb800)),
-        PlotGraphPoint(x: 2, y: 8, color: Color(0xffffb800)),
-        PlotGraphPoint(x: 3, y: 6, color: Color(0xffffb800)),
+        PlotGraphPoint(
+          x: 1,
+          y: 9,
+          color: Color(0xffffb800),
+          labels: [
+            PlotGraphPointLabel(
+              text: '9점',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 2,
+          y: 8,
+          color: Color(0xffffb800),
+          labels: [
+            PlotGraphPointLabel(
+              text: '8점',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 3,
+          y: 6,
+          color: Color(0xffffb800),
+          labels: [
+            PlotGraphPointLabel(
+              text: '6점',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 4,
+          y: null,
+          color: Color(0xffffb800),
+          labels: [
+            PlotGraphPointLabel(
+              text: '기록 없음',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 5,
+          y: null,
+          color: Color(0xffffb800),
+          labels: [
+            PlotGraphPointLabel(
+              text: '기록 없음',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 6,
+          y: null,
+          color: Color(0xffffb800),
+          labels: [
+            PlotGraphPointLabel(
+              text: '기록 없음',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 7,
+          y: 1,
+          color: Color(0xffffb800),
+          labels: [
+            PlotGraphPointLabel(
+              text: '1점',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
       ],
-      zIndex: 12,
-    ),
-    PlotGraphPointGroup(
-      type: PlotGraphType.line,
-      lineType: PlotGraphLineType.dashed,
-      pointShape: PlotGraphPointShape.triangle,
-      points: [PlotGraphPoint(x: 7, y: 1, color: Color(0xffffb800))],
       zIndex: 12,
     ),
     PlotGraphPointGroup(
@@ -113,13 +261,83 @@ const _sampleData = PlotGraphData(
       axisBinding: PlotGraphAxisBinding.right,
       type: PlotGraphType.bar,
       points: [
-        PlotGraphPoint(x: 1, y: 1, color: Color(0xff16ad7e)),
-        PlotGraphPoint(x: 2, y: 2, color: Color(0xff16ad7e)),
-        PlotGraphPoint(x: 3, y: 5, color: Color(0xff16ad7e)),
-        PlotGraphPoint(x: 4, y: null, color: Color(0xff16ad7e)),
-        PlotGraphPoint(x: 5, y: null, color: Color(0xff16ad7e)),
-        PlotGraphPoint(x: 6, y: null, color: Color(0xff16ad7e)),
-        PlotGraphPoint(x: 7, y: 12, color: Color(0xff16ad7e)),
+        PlotGraphPoint(
+          x: 1,
+          y: 1,
+          color: Color(0xff16ad7e),
+          labels: [
+            PlotGraphPointLabel(
+              text: '1시간',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 2,
+          y: 2,
+          color: Color(0xff16ad7e),
+          labels: [
+            PlotGraphPointLabel(
+              text: '2시간 1분',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 3,
+          y: 5,
+          color: Color(0xff16ad7e),
+          labels: [
+            PlotGraphPointLabel(
+              text: '5시간 4분',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 4,
+          y: null,
+          color: Color(0xff16ad7e),
+          labels: [
+            PlotGraphPointLabel(
+              text: '기록 없음',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 5,
+          y: null,
+          color: Color(0xff16ad7e),
+          labels: [
+            PlotGraphPointLabel(
+              text: '기록 없음',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 6,
+          y: null,
+          color: Color(0xff16ad7e),
+          labels: [
+            PlotGraphPointLabel(
+              text: '기록 없음',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 7,
+          y: 12,
+          color: Color(0xff16ad7e),
+          labels: [
+            PlotGraphPointLabel(
+              text: '12시간 3분',
+              type: PlotGraphPointLabelType.overlay,
+            ),
+          ],
+        ),
       ],
       zIndex: 6,
     ),

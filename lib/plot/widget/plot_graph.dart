@@ -1,99 +1,233 @@
+import 'package:clickless_graph/plot/model/plot_graph_bubble_overlay_haptic_feedback.dart';
+import 'package:clickless_graph/plot/model/plot_graph_bubble_overlay_item.dart';
+import 'package:clickless_graph/plot/model/plot_graph_bubble_overlay_tail_position.dart';
 import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_legend_position.dart';
-import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
-import 'package:clickless_graph/plot/util/canvas_paint_extension.dart';
+import 'package:clickless_graph/plot/util/plot_graph_pointer_info.dart';
+import 'package:clickless_graph/plot/theme/plot_graph_bubble_overlay_theme.dart';
 import 'package:clickless_graph/plot/util/graph_data_extension.dart';
+import 'package:clickless_graph/plot/util/graph_data_point_extension.dart';
+import 'package:clickless_graph/plot/util/plot_graph_layout.dart';
+import 'package:clickless_graph/plot/widget/plot_graph_bubble_overlay.dart';
 import 'package:clickless_graph/plot/widget/plot_graph_painter.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
+import 'package:clickless_graph/plot/widget/plot_graph_point_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-final class PlotGraph extends StatelessWidget {
+final class PlotGraph extends StatefulWidget {
   const PlotGraph({
     super.key,
     required this.data,
     this.theme = const PlotGraphTheme(),
+    this.bubbleOverlayTheme = const PlotGraphBubbleOverlayTheme(),
+    this.showBubbleOverlay = false,
+    this.bubbleOverlayHapticFeedback,
   });
 
   final PlotGraphData data;
   final PlotGraphTheme theme;
+  final PlotGraphBubbleOverlayTheme bubbleOverlayTheme;
+  final bool showBubbleOverlay;
+  final PlotGraphBubbleOverlayHapticFeedback? bubbleOverlayHapticFeedback;
+
+  @override
+  State<PlotGraph> createState() => _PlotGraphState();
+}
+
+final class _PlotGraphState extends State<PlotGraph> {
+  PlotGraphPointerInfo? _tapDownInfo;
+  List<PlotGraphBubbleOverlayItem>? _bubbleOverlayItems;
 
   @override
   Widget build(BuildContext context) {
+    final data = widget.data;
+    final theme = widget.theme;
     final title = data.title;
+    final tapDownInfo = _tapDownInfo;
+    final bubbleOverlayItems = _bubbleOverlayItems;
 
-    return Column(
+    return Stack(
+      fit: StackFit.expand,
       children: [
-        if (data.hasTitle ||
-            data.hasLegend &&
-                data.legendPosition == PlotGraphLegendPosition.topRight)
-          Padding(
-            padding: EdgeInsets.only(bottom: theme.titleLineAndTopOfGraphGap),
-            child: Row(
-              spacing: 8,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (title != null)
-                  Expanded(
-                    flex: 2,
-                    child: Text(title, style: theme.titleTextStyle),
-                  )
-                else
-                  SizedBox.shrink(),
-                if (data.hasLegend &&
+        Column(
+          children: [
+            if (data.hasTitle ||
+                data.hasLegend &&
                     data.legendPosition == PlotGraphLegendPosition.topRight)
-                  Expanded(
-                    flex: 1,
-                    child: _PlotGraphLegendView(
-                      data: data,
-                      theme: theme,
-                      alignment: WrapAlignment.end,
-                    ),
-                  )
-                else
-                  SizedBox.shrink(),
-              ],
-            ),
-          ),
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SizedBox(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight,
-                child: RepaintBoundary(
-                  child: CustomPaint(
-                    painter: PlotGraphPainter(
-                      data: data,
-                      theme: theme,
-                      textDirection:
-                          Directionality.maybeOf(context) ?? TextDirection.ltr,
-                    ),
-                  ),
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: theme.titleLineAndTopOfGraphGap,
                 ),
-              );
-            },
-          ),
-        ),
-        if (data.hasLegend &&
-            data.legendPosition == PlotGraphLegendPosition.bottomCenter)
-          Padding(
-            padding: EdgeInsets.only(top: theme.legendAndBottomOfGraphGap),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: _PlotGraphLegendView(
+                child: Row(
+                  spacing: 8,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (title != null)
+                      Expanded(
+                        flex: 2,
+                        child: Text(title, style: theme.titleTextStyle),
+                      )
+                    else
+                      SizedBox.shrink(),
+                    if (data.hasLegend &&
+                        data.legendPosition == PlotGraphLegendPosition.topRight)
+                      Expanded(
+                        flex: 1,
+                        child: _PlotGraphLegendView(
+                          data: data,
+                          theme: theme,
+                          alignment: WrapAlignment.end,
+                        ),
+                      )
+                    else
+                      SizedBox.shrink(),
+                  ],
+                ),
+              ),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final textDirection =
+                      Directionality.maybeOf(context) ?? TextDirection.ltr;
+
+                  final size = Size(
+                    constraints.maxWidth,
+                    constraints.maxHeight,
+                  );
+
+                  final layout = PlotGraphLayout(
+                    size: size,
                     data: data,
                     theme: theme,
-                    alignment: WrapAlignment.center,
-                  ),
+                    textDirection: textDirection,
+                  );
+
+                  return SizedBox(
+                    width: size.width,
+                    height: size.height,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        RepaintBoundary(
+                          child: CustomPaint(
+                            painter: PlotGraphPainter(
+                              data: data,
+                              theme: theme,
+                              textDirection: textDirection,
+                            ),
+                          ),
+                        ),
+                        if (widget.showBubbleOverlay)
+                          MouseRegion(
+                            onExit: (event) => _hideBubbleOverlay(),
+                            child: Listener(
+                              behavior: HitTestBehavior.opaque,
+                              onPointerHover: (event) =>
+                                  _showBubbleOverlay(event, layout),
+                              onPointerDown: (event) =>
+                                  _showBubbleOverlay(event, layout),
+                              onPointerMove: (event) =>
+                                  _showBubbleOverlay(event, layout),
+                              onPointerUp: (event) => _hideBubbleOverlay(),
+                              onPointerCancel: (event) => _hideBubbleOverlay(),
+                              child: const SizedBox.expand(),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            if (data.hasLegend &&
+                data.legendPosition == PlotGraphLegendPosition.bottomCenter)
+              Padding(
+                padding: EdgeInsets.only(top: theme.legendAndBottomOfGraphGap),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: _PlotGraphLegendView(
+                        data: data,
+                        theme: theme,
+                        alignment: WrapAlignment.center,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
+          ],
+        ),
+        if (tapDownInfo != null && bubbleOverlayItems != null)
+          IgnorePointer(
+            child: _PlotGraphBubbleOverlayPositioner(
+              info: tapDownInfo,
+              theme: widget.bubbleOverlayTheme,
+              items: bubbleOverlayItems,
             ),
           ),
       ],
     );
   }
+
+  void _showBubbleOverlay(PointerEvent event, PlotGraphLayout layout) {
+    final newTapDownInfo = layout.getTapDownInfo(event.localPosition);
+    final newBubbleOverlayItems = _getBubbleOverlayItems(newTapDownInfo);
+
+    final isNewBubbleOverlayItemsNotEmpty =
+        newBubbleOverlayItems != null && newBubbleOverlayItems.isNotEmpty;
+
+    final isHapticable =
+        isNewBubbleOverlayItemsNotEmpty &&
+        _tapDownInfo?.nearestXAxisMarkingXOffset !=
+            newTapDownInfo.nearestXAxisMarkingXOffset;
+
+    if (isHapticable) {
+      switch (widget.bubbleOverlayHapticFeedback) {
+        case PlotGraphBubbleOverlayHapticFeedback.light:
+          HapticFeedback.lightImpact();
+        case PlotGraphBubbleOverlayHapticFeedback.medium:
+          HapticFeedback.mediumImpact();
+        case PlotGraphBubbleOverlayHapticFeedback.heavy:
+          HapticFeedback.heavyImpact();
+        case null: // do nothing
+      }
+    }
+
+    setState(() {
+      _tapDownInfo = newTapDownInfo;
+      _bubbleOverlayItems = isNewBubbleOverlayItemsNotEmpty
+          ? newBubbleOverlayItems
+          : null;
+    });
+  }
+
+  void _hideBubbleOverlay() {
+    setState(() {
+      _tapDownInfo = null;
+      _bubbleOverlayItems = null;
+    });
+  }
+
+  List<PlotGraphBubbleOverlayItem>? _getBubbleOverlayItems(
+    PlotGraphPointerInfo info,
+  ) => info.nearestPoints
+      .map((point) {
+        final overlayLabel = point.point.overlayLabel;
+
+        return overlayLabel != null &&
+                point.point.x == info.nearestXAxisMarking?.value
+            ? PlotGraphBubbleOverlayItem(
+                markerShape: point.group.pointShape,
+                markerColor: point.point.color,
+                legend: point.group.legend,
+                data: overlayLabel,
+              )
+            : null;
+      })
+      .whereType<PlotGraphBubbleOverlayItem>()
+      .toList();
 }
 
 final class _PlotGraphLegendView extends StatelessWidget {
@@ -126,7 +260,7 @@ final class _PlotGraphLegendView extends StatelessWidget {
                         width: theme.pointSize,
                         height: theme.pointSize,
                         child: CustomPaint(
-                          painter: _PlotGraphLegendViewPointPainter(
+                          painter: PlotGraphPointPainter(
                             pointGroup: group,
                             theme: theme,
                           ),
@@ -144,42 +278,108 @@ final class _PlotGraphLegendView extends StatelessWidget {
   }
 }
 
-final class _PlotGraphLegendViewPointPainter extends CustomPainter {
-  _PlotGraphLegendViewPointPainter({
-    required this.pointGroup,
+final class _PlotGraphBubbleOverlayPositioner extends StatelessWidget {
+  const _PlotGraphBubbleOverlayPositioner({
+    required this.info,
     required this.theme,
+    required this.items,
   });
 
-  final PlotGraphPointGroup pointGroup;
-  final PlotGraphTheme theme;
+  final PlotGraphPointerInfo info;
+  final PlotGraphBubbleOverlayTheme theme;
+  final List<PlotGraphBubbleOverlayItem> items;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final color = _legendColor(pointGroup);
-    final size = theme.pointSize;
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final anchor = _getAnchorOffset();
+        final tailPosition = _getTailPosition(anchor, constraints.biggest);
 
-    canvas.drawPoint(
-      center: Offset(size / 2, size / 2),
-      size: size,
-      color: color,
-      shape: pointGroup.pointShape,
+        return CustomSingleChildLayout(
+          delegate: _PlotGraphBubbleOverlayLayoutDelegate(
+            anchor: anchor,
+            tailPosition: tailPosition,
+            theme: theme,
+          ),
+          child: PlotGraphBubbleOverlay(
+            items: items,
+            tailPoisition: tailPosition,
+            theme: theme,
+          ),
+        );
+      },
     );
   }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) =>
-      oldDelegate is! _PlotGraphLegendViewPointPainter ||
-      pointGroup != oldDelegate.pointGroup;
-
-  Color _legendColor(PlotGraphPointGroup group) {
-    for (final point in group.points) {
-      if (point.y != null) {
-        return point.color;
-      }
-    }
-
-    return group.points.isEmpty
-        ? theme.disabledColor
-        : group.points.first.color;
+  Offset _getAnchorOffset() {
+    return Offset(info.nearestXAxisMarkingXOffset ?? 0, 0);
   }
+
+  PlotGraphBubbleOverlayTailPosition _getTailPosition(
+    Offset anchor,
+    Size size,
+  ) {
+    final isLeft = anchor.dx < size.width * 0.33;
+    final isRight = anchor.dx > size.width * 0.67;
+
+    return isLeft
+        ? PlotGraphBubbleOverlayTailPosition.bottomLeft
+        : isRight
+        ? PlotGraphBubbleOverlayTailPosition.bottomRight
+        : PlotGraphBubbleOverlayTailPosition.bottomCenter;
+  }
+}
+
+final class _PlotGraphBubbleOverlayLayoutDelegate
+    extends SingleChildLayoutDelegate {
+  const _PlotGraphBubbleOverlayLayoutDelegate({
+    required this.anchor,
+    required this.tailPosition,
+    required this.theme,
+  });
+
+  final Offset anchor;
+  final PlotGraphBubbleOverlayTailPosition tailPosition;
+  final PlotGraphBubbleOverlayTheme theme;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
+      constraints.loosen();
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) {
+    final left = (anchor.dx - _tailCenterX(childSize.width)).clamp(
+      0.0,
+      (size.width - childSize.width).clamp(0.0, double.infinity),
+    );
+
+    final top = (size.height / 4 - childSize.height / 2).clamp(
+      0.0,
+      (size.height - childSize.height).clamp(0.0, double.infinity),
+    );
+
+    return Offset(left, top);
+  }
+
+  double _tailCenterX(double width) {
+    switch (tailPosition) {
+      case PlotGraphBubbleOverlayTailPosition.topLeft:
+      case PlotGraphBubbleOverlayTailPosition.bottomLeft:
+        return theme.tailCenterXOffsetFromNearEnd;
+
+      case PlotGraphBubbleOverlayTailPosition.topCenter:
+      case PlotGraphBubbleOverlayTailPosition.bottomCenter:
+        return width / 2;
+
+      case PlotGraphBubbleOverlayTailPosition.topRight:
+      case PlotGraphBubbleOverlayTailPosition.bottomRight:
+        return width - theme.tailCenterXOffsetFromNearEnd;
+    }
+  }
+
+  @override
+  bool shouldRelayout(
+    covariant _PlotGraphBubbleOverlayLayoutDelegate oldDelegate,
+  ) => anchor != oldDelegate.anchor || tailPosition != oldDelegate.tailPosition;
 }

@@ -1,0 +1,1 @@
+enum PlotGraphPointLabelType { point, overlay }

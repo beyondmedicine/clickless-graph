@@ -4,6 +4,8 @@ import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_indicator_line.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_label.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_label_type.dart';
 import 'package:clickless_graph/plot/model/plot_graph_type.dart';
 import 'package:clickless_graph/plot/widget/plot_graph.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
@@ -70,13 +72,83 @@ const _sampleData = PlotGraphData(
     PlotGraphPointGroup(
       type: PlotGraphType.bar,
       points: [
-        PlotGraphPoint(x: 0, y: 9, color: _blue, label: '9점'),
-        PlotGraphPoint(x: 1, y: 8, color: _blue, label: '8점'),
-        PlotGraphPoint(x: 2, y: 7, color: _blue, label: '7점'),
-        PlotGraphPoint(x: 3, y: 5, color: _blue, label: '5점'),
-        PlotGraphPoint(x: 4, y: 4, color: _blue, label: '4점'),
-        PlotGraphPoint(x: 5, y: 2, color: _blue, label: '2점'),
-        PlotGraphPoint(x: 6, y: 1, color: _blue, label: '1점'),
+        PlotGraphPoint(
+          x: 0,
+          y: 9,
+          color: _blue,
+          labels: [
+            PlotGraphPointLabel(
+              text: '9점',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 1,
+          y: 8,
+          color: _blue,
+          labels: [
+            PlotGraphPointLabel(
+              text: '8점',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 2,
+          y: 7,
+          color: _blue,
+          labels: [
+            PlotGraphPointLabel(
+              text: '7점',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 3,
+          y: 5,
+          color: _blue,
+          labels: [
+            PlotGraphPointLabel(
+              text: '5점',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 4,
+          y: 4,
+          color: _blue,
+          labels: [
+            PlotGraphPointLabel(
+              text: '4점',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 5,
+          y: 2,
+          color: _blue,
+          labels: [
+            PlotGraphPointLabel(
+              text: '2점',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 6,
+          y: 1,
+          color: _blue,
+          labels: [
+            PlotGraphPointLabel(
+              text: '1점',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
       ],
       zIndex: 11,
       indicatorLines: [PlotGraphIndicatorLine(value: 7.32, label: '평균\n7.3')],

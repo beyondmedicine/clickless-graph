@@ -3,6 +3,8 @@ import 'package:clickless_graph/plot/model/plot_graph_axis_marking.dart';
 import 'package:clickless_graph/plot/model/plot_graph_data.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point.dart';
 import 'package:clickless_graph/plot/model/plot_graph_point_group.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_label.dart';
+import 'package:clickless_graph/plot/model/plot_graph_point_label_type.dart';
 import 'package:clickless_graph/plot/model/plot_graph_type.dart';
 import 'package:clickless_graph/plot/widget/plot_graph.dart';
 import 'package:clickless_graph/plot/theme/plot_graph_theme.dart';
@@ -70,13 +72,83 @@ const _sampleData = PlotGraphData(
     PlotGraphPointGroup(
       type: PlotGraphType.bar,
       points: [
-        PlotGraphPoint(x: 0, y: 2, color: _red, label: '있음'),
-        PlotGraphPoint(x: 1, y: 2, color: _red, label: '있음'),
-        PlotGraphPoint(x: 2, y: 2, color: _red, label: '있음'),
-        PlotGraphPoint(x: 3, y: 1, color: _yellow, label: '가끔'),
-        PlotGraphPoint(x: 4, y: 1, color: _yellow, label: '가끔'),
-        PlotGraphPoint(x: 5, y: 1, color: _yellow, label: '가끔'),
-        PlotGraphPoint(x: 6, y: null, color: _green, label: '없음'),
+        PlotGraphPoint(
+          x: 0,
+          y: 2,
+          color: _red,
+          labels: [
+            PlotGraphPointLabel(
+              text: '있음',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 1,
+          y: 2,
+          color: _red,
+          labels: [
+            PlotGraphPointLabel(
+              text: '있음',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 2,
+          y: 2,
+          color: _red,
+          labels: [
+            PlotGraphPointLabel(
+              text: '있음',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 3,
+          y: 1,
+          color: _yellow,
+          labels: [
+            PlotGraphPointLabel(
+              text: '가끔',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 4,
+          y: 1,
+          color: _yellow,
+          labels: [
+            PlotGraphPointLabel(
+              text: '가끔',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 5,
+          y: 1,
+          color: _yellow,
+          labels: [
+            PlotGraphPointLabel(
+              text: '가끔',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
+        PlotGraphPoint(
+          x: 6,
+          y: null,
+          color: _green,
+          labels: [
+            PlotGraphPointLabel(
+              text: '없음',
+              type: PlotGraphPointLabelType.point,
+            ),
+          ],
+        ),
       ],
     ),
   ],
