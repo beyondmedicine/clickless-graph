@@ -25,14 +25,25 @@ final class PolygonGraph<T> extends StatelessWidget {
   final EdgeInsets axisLabelTouchPadding;
 
   final void Function(
-    TapDownDetails details,
+    PointerDownEvent event,
     PolygonGraphAxis<T> axis,
     Offset offset,
   )?
   onAxisLabelTapDown;
 
-  final void Function(TapUpDetails details)? onAxisLabelTapUp;
-  final void Function()? onAxisLabelTapCancel;
+  final void Function(
+    PointerUpEvent event,
+    PolygonGraphAxis<T> axis,
+    Offset offset,
+  )?
+  onAxisLabelTapUp;
+
+  final void Function(
+    PointerCancelEvent event,
+    PolygonGraphAxis<T> axis,
+    Offset offset,
+  )?
+  onAxisLabelTapCancel;
 
   final void Function(
     PointerEnterEvent event,
@@ -135,14 +146,25 @@ final class _AxisLabelInteractionArea<T> extends StatelessWidget {
   final EdgeInsets padding;
 
   final void Function(
-    TapDownDetails details,
+    PointerDownEvent event,
     PolygonGraphAxis<T> axis,
     Offset offset,
   )?
   onTapDown;
 
-  final void Function(TapUpDetails details)? onTapUp;
-  final VoidCallback? onTapCancel;
+  final void Function(
+    PointerUpEvent event,
+    PolygonGraphAxis<T> axis,
+    Offset offset,
+  )?
+  onTapUp;
+
+  final void Function(
+    PointerCancelEvent event,
+    PolygonGraphAxis<T> axis,
+    Offset offset,
+  )?
+  onTapCancel;
 
   final void Function(
     PointerEnterEvent event,
@@ -182,22 +204,20 @@ final class _AxisLabelInteractionArea<T> extends StatelessWidget {
         child: Listener(
           behavior: HitTestBehavior.opaque,
           onPointerDown: (event) => onTapDown?.call(
-            TapDownDetails(
-              globalPosition: event.position,
-              localPosition: event.localPosition,
-              kind: event.kind,
-            ),
+            event,
             axis,
             touchRect.topLeft + event.localPosition,
           ),
           onPointerUp: (event) => onTapUp?.call(
-            TapUpDetails(
-              globalPosition: event.position,
-              localPosition: event.localPosition,
-              kind: event.kind,
-            ),
+            event,
+            axis,
+            touchRect.topLeft + event.localPosition,
           ),
-          onPointerCancel: (_) => onTapCancel?.call(),
+          onPointerCancel: (event) => onTapCancel?.call(
+            event,
+            axis,
+            touchRect.topLeft + event.localPosition,
+          ),
           child: const SizedBox.expand(),
         ),
       ),

@@ -23,10 +23,16 @@ final class PolygonGraphPreview1App extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: PolygonGraph(
               data: _sampleData,
-              onAxisLabelTapDown: (details, axis, offset) =>
+              onAxisLabelTapDown: (event, axis, offset) =>
                   debugPrint('tap down: ${offset.toString()}, ${axis.info}'),
-              onAxisLabelTapUp: (details) => debugPrint('tap up'),
-              onAxisLabelTapCancel: () => debugPrint('tap cancel'),
+              onAxisLabelTapUp: (event, axis, offset) =>
+                  debugPrint('tap up: ${offset.toString()}, ${axis.info}'),
+              onAxisLabelTapCancel: (event, axis, offset) =>
+                  debugPrint('tap cancel: ${offset.toString()}, ${axis.info}'),
+              onAxisLabelEnter: (event, axis, offset) =>
+                  debugPrint('mouse enter: ${offset.toString()}, ${axis.info}'),
+              onAxisLabelExit: (event, axis, offset) =>
+                  debugPrint('mouse exit: ${offset.toString()}, ${axis.info}'),
             ),
           ),
         ),
