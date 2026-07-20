@@ -161,13 +161,7 @@ final class PolygonGraphPainter extends CustomPainter {
 
     final position =
         center +
-        Offset(
-          0,
-          radius *
-              cos(pi / data.axes.length) *
-              line.value /
-              (data.max - data.min),
-        );
+        Offset(0, _mapValueToRadius(line.value) * cos(pi / data.axes.length));
 
     canvas.drawRect(
       Rect.fromLTRB(
