@@ -1,0 +1,73 @@
+import 'package:clickless_graph/polygon/model/polygon_graph_axis.dart';
+import 'package:clickless_graph/polygon/model/polygon_graph_data.dart';
+import 'package:clickless_graph/polygon/model/polygon_graph_indicator_line.dart';
+import 'package:clickless_graph/polygon/model/polygon_graph_point_group.dart';
+import 'package:clickless_graph/polygon/widget/polygon_graph.dart';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const PolygonGraphPreview2App());
+}
+
+final class PolygonGraphPreview2App extends StatelessWidget {
+  const PolygonGraphPreview2App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: PolygonGraph(
+              data: _sampleData,
+              onAxisLabelTapDown: (details, axis, offset) =>
+                  debugPrint('tap down: ${offset.toString()}, ${axis.info}'),
+              onAxisLabelTapUp: (details) => debugPrint('tap up'),
+              onAxisLabelTapCancel: () => debugPrint('tap cancel'),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+const _blue = Color(0xFF29A9FF);
+const _gray = Color(0xFFB8C7D4);
+
+const _sampleData = PolygonGraphData(
+  min: -0.5,
+  max: 10,
+  axes: [
+    PolygonGraphAxis(label: '관자놀이', info: 1),
+    PolygonGraphAxis(label: '관절강', info: 2),
+    PolygonGraphAxis(label: '목 근육', info: 3),
+    PolygonGraphAxis(label: '저작근 하부', info: 4),
+    PolygonGraphAxis(label: '저작근 중심', info: 5),
+    PolygonGraphAxis(label: '이마 근육', info: 6),
+  ],
+  markingLines: [
+    PolygonGraphMarkingLine(value: 0, label: '0'),
+    PolygonGraphMarkingLine(value: 5, label: '5'),
+    PolygonGraphMarkingLine(value: 10, label: '10'),
+  ],
+  pointGroups: [
+    PolygonGraphPointGroup(
+      legend: '기준',
+      values: [0, 0, 7, 0, 0, 4],
+      pointColor: _gray,
+      fillColor: Color(0x1FB8C7D4),
+      zIndex: 0,
+    ),
+    PolygonGraphPointGroup(
+      legend: '현재',
+      values: [0, 0, 0, 0, 0, 0],
+      pointColor: _blue,
+      fillColor: Color(0x2629A9FF),
+      zIndex: 2,
+    ),
+  ],
+);
