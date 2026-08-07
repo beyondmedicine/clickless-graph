@@ -24,7 +24,6 @@ final class PolygonGraphPainter extends CustomPainter {
   late PolygonGraphLayout layout;
 
   double get radius => layout.radius;
-
   Offset get center => layout.center;
 
   @override
@@ -90,14 +89,17 @@ final class PolygonGraphPainter extends CustomPainter {
       ..strokeWidth = theme.axisLineWidth
       ..style = PaintingStyle.stroke;
 
-    final angle = pi - 2 * pi / data.axes.length;
+    final angle = pi * 2 / data.axes.length;
+    final cornerRadiusPadding =
+        theme.cornerRadius * (1 - cos(angle / 2)) / sin(angle / 2);
 
-    final axisLength =
-        radius - theme.cornerRadius * (1 / cos(angle / 2) - 1 / sin(angle / 2));
+    final offsetLength = _mapValueToRadius(data.min) - cornerRadiusPadding;
+    final axisLength = radius - cornerRadiusPadding;
 
     for (var i = 0; i < data.axes.length; i += 1) {
-      final offset = layout.getOffset(axisIndex: i, radius: axisLength);
-      canvas.drawLine(center, offset, paint);
+      final start = layout.getOffset(axisIndex: i, radius: offsetLength);
+      final end = layout.getOffset(axisIndex: i, radius: axisLength);
+      canvas.drawLine(start, end, paint);
     }
   }
 
@@ -190,19 +192,18 @@ final class PolygonGraphPainter extends CustomPainter {
     final vertices = group.values.indexed.map((x) {
       final value = x.$2;
 
-      return value != null
-          ? layout.getOffset(axisIndex: x.$1, radius: _mapValueToRadius(value))
-          : null;
+      return (
+        value: value,
+        offset: layout.getOffset(
+          axisIndex: x.$1,
+          radius: _mapValueToRadius(value ?? data.min),
+        ),
+      );
     }).toList();
 
     // 그래프 내부 색칠
     canvas.drawPath(
-      _getPolygonPath(
-        vertices
-            .map((vertice) => vertice ?? center)
-            .whereType<Offset>()
-            .toList(),
-      ),
+      _getPolygonPath(vertices.map((vertice) => vertice.offset).toList()),
       Paint()
         ..color = group.fillColor
         ..style = PaintingStyle.fill,
@@ -210,12 +211,7 @@ final class PolygonGraphPainter extends CustomPainter {
 
     // 그래프 외곽선
     canvas.drawPath(
-      _getPolygonPath(
-        vertices
-            .map((vertice) => vertice ?? center)
-            .whereType<Offset>()
-            .toList(),
-      ),
+      _getPolygonPath(vertices.map((vertice) => vertice.offset).toList()),
       Paint()
         ..color = group.pointColor
         ..strokeWidth = theme.pointGroupLineWidth
@@ -226,8 +222,12 @@ final class PolygonGraphPainter extends CustomPainter {
 
     final pointPaint = Paint()..color = group.pointColor;
 
-    for (final point in vertices.whereType<Offset>()) {
-      canvas.drawCircle(point, theme.pointSize / 2, pointPaint);
+    for (final vertex in vertices) {
+      if (vertex.value == null) {
+        continue;
+      }
+
+      canvas.drawCircle(vertex.offset, theme.pointSize / 2, pointPaint);
     }
   }
 
@@ -269,26 +269,42 @@ final class PolygonGraphPainter extends CustomPainter {
       return path..close();
     }
 
-    final corners = vertices.indexed.map((x) {
-      final previous = vertices[(x.$1 + vertices.length - 1) % vertices.length];
-      final next = vertices[(x.$1 + 1) % vertices.length];
+    final corners = vertices.indexed
+        .map((x) {
+          final previous =
+              vertices[(x.$1 + vertices.length - 1) % vertices.length];
+          final next = vertices[(x.$1 + 1) % vertices.length];
 
-      final fromPrevious = previous - x.$2;
-      final toNext = next - x.$2;
+          final fromPrevious = previous - x.$2;
+          final toNext = next - x.$2;
 
-      final previousDistance = fromPrevious.distance;
-      final nextDistance = toNext.distance;
+          final previousDistance = fromPrevious.distance;
+          final nextDistance = toNext.distance;
 
-      final resolvedRadius = min(
-        theme.cornerRadius,
-        min(previousDistance, nextDistance) / 2,
-      );
+          if (previousDistance < 0.001 || nextDistance < 0.001) {
+            return null;
+          }
 
-      final start = x.$2 + fromPrevious * resolvedRadius / previousDistance;
-      final end = x.$2 + toNext * resolvedRadius / nextDistance;
+          final resolvedRadius = min(
+            theme.cornerRadius,
+            min(previousDistance, nextDistance) / 2,
+          );
 
-      return (start: start, control: x.$2, end: end);
-    }).toList();
+          final start = x.$2 + fromPrevious * resolvedRadius / previousDistance;
+          final end = x.$2 + toNext * resolvedRadius / nextDistance;
+
+          return (start: start, control: x.$2, end: end);
+        })
+        .whereType<({Offset start, Offset control, Offset end})>()
+        .toList();
+
+    if (corners.isEmpty) {
+      for (final vertex in vertices.skip(1)) {
+        path.lineTo(vertex.dx, vertex.dy);
+      }
+
+      return path..close();
+    }
 
     path
       ..reset()
@@ -297,11 +313,11 @@ final class PolygonGraphPainter extends CustomPainter {
     for (final corner in corners) {
       path
         ..lineTo(corner.start.dx, corner.start.dy)
-        ..quadraticBezierTo(
-          corner.control.dx,
-          corner.control.dy,
-          corner.end.dx,
-          corner.end.dy,
+        ..arcToPoint(
+          corner.end,
+          radius: Radius.circular(
+            theme.cornerRadius / tan(pi / data.axes.length),
+          ),
         );
     }
 
@@ -309,6 +325,7 @@ final class PolygonGraphPainter extends CustomPainter {
   }
 
   double _mapValueToRadius(num value) {
-    return (value - data.min) / (data.max - data.min) * radius;
+    return theme.offset +
+        (value - data.min) / (data.max - data.min) * (radius - theme.offset);
   }
 }
