@@ -93,7 +93,7 @@ final class PolygonGraphPainter extends CustomPainter {
     final cornerRadiusPadding =
         theme.cornerRadius * (1 - cos(angle / 2)) / sin(angle / 2);
 
-    final offsetLength = _mapValueToRadius(data.min) - cornerRadiusPadding;
+    final offsetLength = max(0.0, _mapValueToRadius(data.min) - cornerRadiusPadding);
     final axisLength = radius - cornerRadiusPadding;
 
     for (var i = 0; i < data.axes.length; i += 1) {
@@ -326,6 +326,6 @@ final class PolygonGraphPainter extends CustomPainter {
 
   double _mapValueToRadius(num value) {
     return theme.offset +
-        (value - data.min) / (data.max - data.min) * (radius - theme.offset);
+        (value - data.min) / (data.max - data.min) * max(0, radius - theme.offset);
   }
 }
