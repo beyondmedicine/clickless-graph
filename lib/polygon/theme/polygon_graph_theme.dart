@@ -12,6 +12,7 @@ final class PolygonGraphTheme {
     this.axisLineWidth = 0.5,
     this.markingLineWidth = 0.5,
     this.cornerRadius = 4,
+    this.offset = 0,
     this.pointSize = 6,
     this.markingLabelPadding = 4,
     this.verticeAndAxisLabelCenterGap = 12,
@@ -31,12 +32,14 @@ final class PolygonGraphTheme {
   final double pointSize;
   final double cornerRadius;
 
+  final double offset;
+
   final double markingLabelPadding;
   final double verticeAndAxisLabelCenterGap;
 
   final TextStyle axisLabelTextStyle;
   final TextStyle markingLabelTextStyle;
-  
+
   static const TextStyle defaultAxisLabelTextStyle = TextStyle(
     color: Color(0xFF8D9BA8),
     fontSize: 12,
@@ -44,6 +47,7 @@ final class PolygonGraphTheme {
     letterSpacing: -0.24,
     height: 1.4,
   );
+
   static const TextStyle defaultMarkingLabelTextStyle = TextStyle(
     color: Color(0xFF8D9BA8),
     fontSize: 12,
@@ -62,6 +66,7 @@ final class PolygonGraphTheme {
     double? axisLineWidth,
     double? markingLineWidth,
     double? cornerRadius,
+    double? offset,
     double? markingLabelPadding,
     double? pointSize,
     double? verticeAndAxisLabelCenterGap,
@@ -77,6 +82,7 @@ final class PolygonGraphTheme {
     axisLineWidth: axisLineWidth ?? this.axisLineWidth,
     markingLineWidth: markingLineWidth ?? this.markingLineWidth,
     cornerRadius: cornerRadius ?? this.cornerRadius,
+    offset: offset ?? this.offset,
     pointSize: pointSize ?? this.pointSize,
     markingLabelPadding: markingLabelPadding ?? this.markingLabelPadding,
     verticeAndAxisLabelCenterGap:
@@ -98,6 +104,7 @@ final class PolygonGraphTheme {
           other.axisLineWidth == axisLineWidth &&
           other.markingLineWidth == markingLineWidth &&
           other.cornerRadius == cornerRadius &&
+          other.offset == offset &&
           other.pointSize == pointSize &&
           other.markingLabelPadding == markingLabelPadding &&
           other.verticeAndAxisLabelCenterGap == verticeAndAxisLabelCenterGap &&
@@ -115,6 +122,7 @@ final class PolygonGraphTheme {
     axisLineWidth,
     markingLineWidth,
     cornerRadius,
+    offset,
     pointSize,
     markingLabelPadding,
     verticeAndAxisLabelCenterGap,

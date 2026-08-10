@@ -2,6 +2,7 @@ import 'package:clickless_graph/polygon/model/polygon_graph_axis.dart';
 import 'package:clickless_graph/polygon/model/polygon_graph_data.dart';
 import 'package:clickless_graph/polygon/model/polygon_graph_indicator_line.dart';
 import 'package:clickless_graph/polygon/model/polygon_graph_point_group.dart';
+import 'package:clickless_graph/polygon/theme/polygon_graph_theme.dart';
 import 'package:clickless_graph/polygon/widget/polygon_graph.dart';
 import 'package:flutter/material.dart';
 
@@ -23,10 +24,9 @@ final class PolygonGraphPreview2App extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: PolygonGraph(
               data: _sampleData,
+              theme: PolygonGraphTheme(cornerRadius: 4, offset: 24),
               onAxisLabelTapDown: (details, axis, offset) =>
                   debugPrint('tap down: ${offset.toString()}, ${axis.info}'),
-              onAxisLabelTapUp: (details) => debugPrint('tap up'),
-              onAxisLabelTapCancel: () => debugPrint('tap cancel'),
             ),
           ),
         ),
@@ -39,7 +39,7 @@ const _blue = Color(0xFF29A9FF);
 const _gray = Color(0xFFB8C7D4);
 
 const _sampleData = PolygonGraphData(
-  min: -0.5,
+  min: 0,
   max: 10,
   axes: [
     PolygonGraphAxis(label: '관자놀이', info: 1),
@@ -57,14 +57,14 @@ const _sampleData = PolygonGraphData(
   pointGroups: [
     PolygonGraphPointGroup(
       legend: '기준',
-      values: [0, 0, 7, 0, 0, 4],
+      values: [null, null, null, 8, 7, null],
       pointColor: _gray,
       fillColor: Color(0x1FB8C7D4),
       zIndex: 0,
     ),
     PolygonGraphPointGroup(
       legend: '현재',
-      values: [0, 0, 0, 0, 0, 0],
+      values: [7, 2, 3, 2, null, null],
       pointColor: _blue,
       fillColor: Color(0x2629A9FF),
       zIndex: 2,
