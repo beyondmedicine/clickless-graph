@@ -26,6 +26,8 @@ final class PolygonGraphPainter extends CustomPainter {
   double get radius => layout.radius;
   Offset get center => layout.center;
 
+  static const _textAlign = TextAlign.center;
+
   @override
   bool shouldRepaint(covariant PolygonGraphPainter oldDelegate) {
     return oldDelegate.data != data ||
@@ -93,7 +95,10 @@ final class PolygonGraphPainter extends CustomPainter {
     final cornerRadiusPadding =
         theme.cornerRadius * (1 - cos(angle / 2)) / sin(angle / 2);
 
-    final offsetLength = max(0.0, _mapValueToRadius(data.min) - cornerRadiusPadding);
+    final offsetLength = max(
+      0.0,
+      _mapValueToRadius(data.min) - cornerRadiusPadding,
+    );
     final axisLength = radius - cornerRadiusPadding;
 
     for (var i = 0; i < data.axes.length; i += 1) {
@@ -238,6 +243,7 @@ final class PolygonGraphPainter extends CustomPainter {
       label,
       theme.axisLabelTextStyle,
       textDirection: textDirection,
+      textAlign: _textAlign,
     );
 
     final offset = layout.getAxisLabelRect(axisIndex).topLeft;
@@ -247,6 +253,7 @@ final class PolygonGraphPainter extends CustomPainter {
       theme.axisLabelTextStyle,
       offset,
       textDirection: textDirection,
+      textAlign: _textAlign,
     );
 
     canvas.drawLine(
@@ -326,6 +333,8 @@ final class PolygonGraphPainter extends CustomPainter {
 
   double _mapValueToRadius(num value) {
     return theme.offset +
-        (value - data.min) / (data.max - data.min) * max(0, radius - theme.offset);
+        (value - data.min) /
+            (data.max - data.min) *
+            max(0, radius - theme.offset);
   }
 }
