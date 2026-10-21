@@ -21,6 +21,7 @@ final class FaceWidgetPreview1App extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: FaceWidget(
               side: FaceSide.right,
+              strokeWidth: 2.4,
               markers: _sampleMarkers,
               markerBuilder: (context, marker) {
                 final score = marker.value;
