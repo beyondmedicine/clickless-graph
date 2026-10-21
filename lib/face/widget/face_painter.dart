@@ -41,7 +41,7 @@ class FacePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant FacePainter oldDelegate) =>
-      oldDelegate.color != color;
+      oldDelegate.color != color || oldDelegate.strokeWidth != strokeWidth;
 }
 
 const String _pathData = """M252.515 277.667
